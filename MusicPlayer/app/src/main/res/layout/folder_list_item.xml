@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="55dp"
+	android:orientation="horizontal"
+	android:gravity="center_vertical">
+
+	<ImageView
+		android:layout_height="45dp"
+		android:layout_width="45dp"
+		android:id="@+id/folder_list_item_icon"
+		android:src="@drawable/format_folder"
+		android:layout_margin="5dp"/>
+
+	<LinearLayout
+		android:layout_height="match_parent"
+		android:layout_width="match_parent"
+		android:orientation="vertical"
+		android:gravity="center_vertical">
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:gravity="center_vertical"
+			android:textSize="18sp"
+			android:textColor="#000000"
+			android:id="@+id/folder_list_item_name"
+			android:singleLine="true"/>
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:gravity="center_vertical"
+			android:textSize="15sp"
+			android:textColor="#000000"
+			android:id="@+id/folder_list_item_path"
+			android:singleLine="true"/>
+
+	</LinearLayout>
+
+</LinearLayout>
+

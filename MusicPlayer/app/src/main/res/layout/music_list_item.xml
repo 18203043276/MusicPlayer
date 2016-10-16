@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="300dp"
+	android:layout_height="50dp"
+	android:orientation="vertical">
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="5dp"
+		android:layout_marginRight="5dp">
+
+		<TextView
+			android:id="@+id/list_title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="歌曲"
+			android:textSize="18sp"
+			android:textColor="#24FF00"
+			android:singleLine="true"
+			android:maxWidth="255dp"/>
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:text="时间"
+			android:layout_width="wrap_content"
+			android:id="@+id/list_time"
+			android:textSize="12sp"
+			android:textColor="#FFFFFF"
+			android:layout_alignParentRight="true"
+			android:layout_marginTop="6dp"/>
+
+	</RelativeLayout>
+
+	<RelativeLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_marginLeft="5dp"
+		android:layout_marginTop="3dp"
+		android:layout_marginRight="5dp">
+
+		<TextView
+			android:id="@+id/list_singer"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="歌手"
+			android:textColor="#00FFBD"
+			android:singleLine="true"
+			android:maxWidth="240dp"
+			android:textSize="16sp"/>
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:text="数量"
+			android:layout_width="wrap_content"
+			android:id="@+id/list_number"
+			android:textColor="#FFFFFF"
+			android:layout_alignParentRight="true"
+			android:layout_marginTop="2dp"/>
+
+	</RelativeLayout>
+
+</LinearLayout>
+

@@ -1,0 +1,25 @@
+<selector 
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item 
+        android:state_pressed="true"> <!-- pressed the button status -->
+		<shape>
+            <!-- 开始颜色="" 结束颜色="" 颜色渐变="" -->
+            <gradient 
+                android:angle="270" 
+                android:endColor="#50FFFFFF" 
+                android:startColor="#50FFFFFF" />
+        </shape>
+    </item>
+    <item> <!-- no focus the button status(the normal status button) -->
+		<shape>
+            <gradient 
+                android:angle="270" 
+                android:endColor="#00ffffff" 
+                android:startColor="#00ffffff" />
+        </shape>
+    </item>
+
+</selector>
+
+

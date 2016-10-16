@@ -1,21 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cj.music_player" >
-
+    
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+        
     <application
+        android:name=".MusicApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="LogoActivity"
+            android:theme="@style/LogoTheme"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
         </activity>
+        <activity
+            android:name=".activity.MusicActivity"
+            android:launchMode="singleTask"  
+            android:label="@string/app_name" />
+        <activity
+            android:name=".activity.SearchActivity"
+            android:theme="@style/SearchTheme"
+            android:icon="@drawable/search"
+            android:label="搜索"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name=".activity.SettingActivity"
+            android:label="设置"/>
+        <activity
+            android:name=".activity.FilesActivity"
+            android:theme="@style/FilesTheme"
+            android:label="选择文件"/>
+        <activity
+            android:name=".activity.AlbumImageActivity"
+            android:label="专辑图片"
+            android:theme="@style/AlbumImageTheme"/>
+        <activity
+            android:name=".activity.FolderActivity"
+            android:theme="@style/FolderTheme"
+            android:label="文件夹"/>
+        <activity
+            android:name=".activity.AlbumActivity"
+            android:theme="@style/FolderTheme"
+            android:label="专辑"/>
+        <activity
+            android:name=".activity.ArtistActivity"
+            android:theme="@style/FolderTheme"
+            android:label="歌手"/>
+        <activity
+            android:name=".activity.StarActivity"
+            android:theme="@style/StarTheme"
+            android:label="星级"/>
+        
+        <service android:name="com.cj.music_player.service.MusicService" />
+            
     </application>
 
 </manifest>

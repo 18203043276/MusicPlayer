@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="120dp"
+	android:layout_width="match_parent"
+	android:orientation="horizontal"
+	android:id="@+id/notification_layout">
+
+	<RelativeLayout
+		android:layout_height="match_parent"
+		android:layout_width="120dp">
+
+		<ImageView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/notification_image"
+			android:src="@drawable/main_menu_left_image"
+			android:padding="5dp"
+			android:layout_centerInParent="true"/>
+
+	</RelativeLayout>
+
+	<LinearLayout
+		android:layout_height="match_parent"
+		android:layout_width="match_parent"
+		android:orientation="vertical">
+
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="59dp">
+
+			<TextView
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:id="@+id/notification_title"
+				android:singleLine="true"
+				android:textSize="18sp"
+				android:layout_marginTop="3dp"
+				android:maxWidth="200dp"/>
+
+			<TextView
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:id="@+id/notification_arstst"
+				android:layout_alignParentBottom="true"
+				android:layout_marginBottom="5dp"
+				android:singleLine="true"
+				android:maxWidth="170dp"/>
+
+			<ImageButton
+				android:layout_height="30dp"
+				android:layout_width="30dp"
+				android:src="@drawable/search_close"
+				android:background="#00000000"
+				android:id="@+id/notification_close"
+				android:layout_alignParentRight="true"/>
+
+			<TextView
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:id="@+id/notification_number"
+				android:layout_alignParentRight="true"
+				android:layout_alignParentBottom="true"
+				android:layout_margin="5dp"
+				android:gravity="right"/>
+
+		</RelativeLayout>
+
+		<RelativeLayout
+			android:layout_height="1dp"
+			android:layout_width="match_parent"
+			android:background="#FFFFFF"/>
+
+		<RelativeLayout
+			android:layout_height="match_parent"
+			android:layout_width="match_parent">
+
+			<ImageButton
+				android:layout_height="50dp"
+				android:layout_width="50dp"
+				android:layout_centerInParent="true"
+				android:id="@+id/notification_play"
+				android:src="@drawable/music_play"
+				android:scaleType="centerCrop"
+				android:background="#00000000"/>
+
+			<ImageButton
+				android:layout_height="50dp"
+				android:layout_width="50dp"
+				android:layout_toRightOf="@id/notification_play"
+				android:layout_centerVertical="true"
+				android:background="#00000000"
+				android:src="@drawable/music_after"
+				android:scaleType="centerCrop"
+				android:id="@+id/notification_after"
+				android:layout_marginLeft="15dp"/>
+
+			<ImageButton
+				android:layout_height="50dp"
+				android:layout_width="50dp"
+				android:layout_toLeftOf="@id/notification_play"
+				android:layout_centerVertical="true"
+				android:src="@drawable/music_before"
+				android:scaleType="centerCrop"
+				android:background="#00000000"
+				android:id="@+id/notification_before"
+				android:layout_marginRight="15dp"/>
+
+		</RelativeLayout>
+
+	</LinearLayout>
+
+</LinearLayout>
+

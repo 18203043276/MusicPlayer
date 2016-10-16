@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="match_parent"
+	android:layout_width="300dp">
+
+	<RelativeLayout
+		android:layout_height="match_parent"
+		android:layout_width="1dp"
+		android:background="#FFFFFF"
+		android:layout_alignParentLeft="true"/>
+
+	<RelativeLayout
+		android:layout_height="match_parent"
+		android:layout_width="1dp"
+		android:background="#FFFFFF"
+		android:layout_alignParentRight="true"/>
+
+	<RelativeLayout
+		android:layout_height="75dp"
+		android:layout_width="match_parent"
+		android:background="#90418DFF">
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:text="音乐列表"
+			android:layout_width="wrap_content"
+			android:layout_centerHorizontal="true"
+			android:layout_alignParentBottom="true"
+			android:layout_marginBottom="10dp"
+			android:textSize="30sp"
+			android:textColor="#90FF00AE"/>
+
+	</RelativeLayout>
+
+	<com.cj.music_player.view.MusicListView
+		android:layout_height="wrap_content"
+		android:layout_width="299dp"
+		android:id="@+id/music_list"
+		android:dividerHeight="1dp"
+		android:divider="#FFFFFF"
+        android:scrollbars="vertical"
+        android:fastScrollEnabled="true"
+        android:scrollbarStyle="outsideOverlay"  
+		android:layout_marginTop="75dp"
+		android:layout_marginBottom="50dp"/>
+
+	<RelativeLayout
+		android:layout_height="50dp"
+		android:layout_width="match_parent"
+		android:background="#903F89DD"
+		android:layout_alignParentBottom="true">
+
+		<Button
+			android:layout_height="wrap_content"
+			android:text="同步"
+			android:layout_width="wrap_content"
+			android:layout_centerInParent="true"
+			android:id="@+id/music_list_Synchronization"
+			android:textColor="#90000000"/>
+
+	</RelativeLayout>
+
+</RelativeLayout>
+
