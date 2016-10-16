@@ -93,6 +93,7 @@ public class MusicActivity extends AppCompatActivity
     private int timer_check = 0;
     private String timer_text = "1";
 
+    //音乐控制
     private SeekBar play_sb;
     private ImageButton play, before, after, mode;
     private RatingBar ratingBar;
@@ -1064,7 +1065,6 @@ public class MusicActivity extends AppCompatActivity
         }
     }
 
-
     //关于
     private void about()
     {
@@ -1083,7 +1083,6 @@ public class MusicActivity extends AppCompatActivity
         builder.setIcon(R.drawable.ic_launcher);
         builder.setTitle("关于");
         builder.setView(dialog);
-        //builder.setMessage("版本1.0\n\n此软件由陈江编写，已开源 https://github.com/18203043276/MusicPlayer \n\n" + sign);
         builder.setPositiveButton("确定", null);
         builder.setNegativeButton("注册", new DialogInterface.OnClickListener(){
 
