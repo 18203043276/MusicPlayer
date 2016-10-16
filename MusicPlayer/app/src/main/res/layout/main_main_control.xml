@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_height="230dp"
+	android:layout_height="wrap_content"
 	android:layout_width="match_parent"
 	android:orientation="vertical"
-	android:background="@drawable/gradient">
+	android:background="@drawable/gradient"
+	android:minHeight="230dp">
 
 	<RelativeLayout
-		android:layout_height="100dp"
-		android:layout_width="match_parent">
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:minHeight="100dp">
 
 		<ImageButton
 			android:layout_width="80dp"
@@ -56,8 +58,9 @@
 	</RelativeLayout>
 
 	<RelativeLayout
-		android:layout_height="30dp"
-		android:layout_width="match_parent">
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:minHeight="30dp">
 
 		<SeekBar
 			android:layout_height="wrap_content"
@@ -92,9 +95,10 @@
 	</RelativeLayout>
 
 	<LinearLayout
-		android:layout_height="100dp"
+		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
-		android:orientation="vertical">
+		android:orientation="vertical"
+		android:minHeight="100dp">
 
 		<TextView
 			android:layout_height="wrap_content"

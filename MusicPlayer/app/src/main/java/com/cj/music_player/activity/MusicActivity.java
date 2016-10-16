@@ -1068,16 +1068,22 @@ public class MusicActivity extends AppCompatActivity
     //关于
     private void about()
     {
+        LayoutInflater inflater = getLayoutInflater();
+        View dialog = inflater.inflate(R.layout.about_dialog, (ViewGroup) findViewById(R.id.about_dialog_LinearLayout));
+        final TextView text = (TextView) dialog.findViewById(R.id.about_dialog_TextView);
+        
         isSign = SharedUtils.getBoolean(MusicActivity.this, "sign", false);
         String sign = "未注册";
         if (isSign == true)
         {
             sign = "已注册";
         }
+        text.setText(sign);
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MusicActivity.this);
         builder.setIcon(R.drawable.ic_launcher);
         builder.setTitle("关于");
-        builder.setMessage("版本1.0\n\n此软件由陈江编写\n\n" + sign);
+        builder.setView(dialog);
+        //builder.setMessage("版本1.0\n\n此软件由陈江编写，已开源 https://github.com/18203043276/MusicPlayer \n\n" + sign);
         builder.setPositiveButton("确定", null);
         builder.setNegativeButton("注册", new DialogInterface.OnClickListener(){
 

@@ -14,7 +14,7 @@
 		android:id="@+id/timer_dialog_EditText"
 		android:gravity="center"
 		android:inputType="number"
-		android:layout_margin="30dp"/>
+		android:layout_margin="20dp"/>
 
 </LinearLayout>
 
