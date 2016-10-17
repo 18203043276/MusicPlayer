@@ -5,7 +5,8 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".MainActivity">
+    tools:showIn="@layout/main"
+	tools:context="com.cj.music_player.activity.MusicActivity">
 
 	<ImageView
 		android:layout_width="match_parent"

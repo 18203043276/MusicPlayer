@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 
 import com.cj.music_player.R;
 import com.cj.music_player.MusicApplication;
+import com.cj.music_player.Constants;
 import com.cj.music_player.view.MusicListView;
 import com.cj.music_player.adapter.MusicAdapter;
 import com.cj.music_player.info.MusicInfo;
@@ -20,7 +21,6 @@ import com.cj.music_player.service.MusicService;
 import com.cj.music_player.tools.MusicTools;
 import com.cj.music_player.tools.AlbumBitmap;
 import com.cj.music_player.tools.BitmapTools;
-import com.cj.music_player.Constants;
 
 import java.util.List;
 import android.widget.TextView;
@@ -119,18 +119,18 @@ public class MusicActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-        {
+      //  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+      //  {
             //透明状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             //透明导航栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
+       // }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        MusicApplication.getInstance().addActivity(this);
-
+        MusicApplication.getInstance().addActivity(MusicActivity.this);
+        
         //标题栏
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");

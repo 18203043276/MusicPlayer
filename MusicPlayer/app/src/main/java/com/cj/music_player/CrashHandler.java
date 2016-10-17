@@ -189,7 +189,7 @@ public class CrashHandler implements UncaughtExceptionHandler
             String fileName = "MusicPlayerCrash - " + time + " - " + timestamp + ".log";  
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
             {  
-                String path = "/sdcard/MusicPlayerCrash/";  
+                String path = Environment.getExternalStorageDirectory().getPath().toString() + "/MusicPlayerCrash/";  
                 File dir = new File(path);  
                 if (!dir.exists())
                 {  
