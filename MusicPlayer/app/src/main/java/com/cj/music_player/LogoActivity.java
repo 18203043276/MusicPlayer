@@ -3,11 +3,12 @@ package com.cj.music_player;
 import android.support.v7.app.AppCompatActivity;
 
 import com.cj.music_player.activity.MusicActivity;
-import com.cj.music_player.db.MusicInfoDB;
+import com.cj.music_player.db.SettingSharedUtils;
 import com.cj.music_player.db.SharedUtils;
 import com.cj.music_player.info.MusicInfo;
 import com.cj.music_player.tools.BitmapTools;
 import com.cj.music_player.tools.AlbumBitmap;
+import com.cj.music_player.list.SongList;
 
 import java.util.List;
 import android.widget.RelativeLayout;
@@ -20,12 +21,12 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.content.Intent;
 import android.view.KeyEvent;
+import java.util.Collections;
 
 public class LogoActivity extends AppCompatActivity
 {
-    private MusicInfoDB db = new MusicInfoDB(this);
     private BitmapTools bitmap_tools = new BitmapTools();
-    private List<MusicInfo> list;
+    private List<MusicInfo> list = new ArrayList<MusicInfo>();
     private RelativeLayout layout;
     private int num;
 
@@ -42,9 +43,21 @@ public class LogoActivity extends AppCompatActivity
 
         MusicApplication.getInstance().addActivity(this);
 
-        list = new ArrayList<MusicInfo>();
-        list = db.getMusicInfo();
+        boolean sort = SettingSharedUtils.getBoolean(LogoActivity.this, "music_list_sort", true);
+        if (sort == true)
+        {
+            list = SongList.getMusicList(LogoActivity.this);
+        }
+        else
+        {
+            list = SongList.getMusicList(LogoActivity.this);
+            Collections.reverse(list);
+        }
         num = SharedUtils.getInt(LogoActivity.this, "num", 0);
+        if (num > list.size())
+        {
+            num = 0;
+        }
         layout = (RelativeLayout) findViewById(R.id.logo_RelativeLayout);
 
         if (list.size() > 1)
@@ -61,18 +74,15 @@ public class LogoActivity extends AppCompatActivity
             if (bitmap == null)
             {
                 bitmap = AlbumBitmap.getAlbumImage(LogoActivity.this, num, Integer.valueOf(list.get(num).getAlbumId()));
-                if (bitmap == null)
-                {
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_menu_left_image);
-                }
             }
-            layout.setBackgroundDrawable(bitmap_tools.bitmapToDrawable(bitmap_tools.createReflectionBitmap(bitmap)));
+            if (bitmap != null)
+            {
+                layout.setBackgroundDrawable(bitmap_tools.bitmapToDrawable(bitmap_tools.createReflectionBitmap(bitmap)));
+            }
             run();
         }
         else
         {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_menu_left_image);
-            layout.setBackgroundDrawable(bitmap_tools.bitmapToDrawable(bitmap_tools.createReflectionBitmap(bitmap)));
             run();
         }
     }

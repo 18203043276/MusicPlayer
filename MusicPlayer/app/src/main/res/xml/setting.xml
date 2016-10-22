@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<PreferenceCategory android:title="专辑图片" >
+
+        <CheckBoxPreference
+            android:key="album_image"
+            android:summaryOn="显示专辑图片"
+            android:summaryOff="不显示专辑图片"
+            android:defaultValue="true"
+            android:title="专辑图片" >
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:dependency="album_image"
+            android:key="save_album_image"
+            android:summaryOn="保存专辑图片"
+            android:summaryOff="不保存专辑图片"
+            android:defaultValue="true"
+            android:title="保存专辑图片" >
+        </CheckBoxPreference>
+
+        <EditTextPreference
+            android:dependency="save_album_image"
+            android:dialogTitle="专辑图片保存路径"
+            android:key="sava_album_image_path"
+			android:defaultValue="/sdcard/音乐专辑图片/"
+            android:title="专辑图片保存路径" >
+        </EditTextPreference>
+
+    </PreferenceCategory>
+	
+	<PreferenceCategory android:title="列表排序" >
+
+        <CheckBoxPreference
+            android:key="music_list_sort"
+            android:summaryOn="按标题升序排序"
+            android:summaryOff="按标题降序排序"
+            android:defaultValue="true"
+            android:title="音乐列表排序" >
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:key="album_list_sort"
+            android:summaryOn="按标题升序排序"
+            android:summaryOff="按标题降序排序"
+            android:defaultValue="true"
+            android:title="专辑列表排序" >
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:key="artist_list_sort"
+            android:summaryOn="按标题升序排序"
+            android:summaryOff="按标题降序排序"
+            android:defaultValue="true"
+            android:title="歌手列表排序" >
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:key="star_list_sort"
+            android:summaryOn="按星级升序排序"
+            android:summaryOff="按星级降序排序"
+            android:defaultValue="true"
+            android:title="星级列表排序" >
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:key="folder_list_sort"
+            android:summaryOn="按标题升序排序"
+            android:summaryOff="按标题降序排序"
+            android:defaultValue="true"
+            android:title="文件夹列表排序" >
+        </CheckBoxPreference>
+
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="媒体库" >
+
+        <Preference
+            android:key="scan_media"
+            android:persistent="false"
+            android:title="重新扫描" >
+        </Preference>
+
+        <Preference
+            android:key="scan_system_media"
+            android:persistent="false"
+            android:title="重新扫描系统媒体库" >
+        </Preference>
+
+    </PreferenceCategory>
+	
+    <PreferenceCategory android:title="关于" >
+
+        <Preference
+            android:key="version"
+            android:persistent="false"
+            android:summary="V3.1"
+            android:title="版本" >
+        </Preference>
+
+        <Preference
+            android:key="writers"
+            android:persistent="false"
+            android:summary="陈江"
+            android:title="作者" >
+        </Preference>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
+

@@ -4,16 +4,17 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    tools:showIn="@layout/main_main"
-    tools:context="com.cj.music_player.activity.MusicActivity">
+	android:layout_width="match_parent"
+	tools:showIn="@layout/main_main"
+	tools:context="com.cj.music_player.activity.MusicActivity">
 
 	<android.support.v7.widget.CardView
 		android:layout_width="wrap_content"
 		android:layout_centerInParent="true"
 		android:layout_height="wrap_content"
 		app:cardBackgroundColor="#00000000"
-		app:cardElevation="5dp">
+		app:cardElevation="5dp"
+		android:id="@+id/main_main_image_CardView">
 
 		<ImageView
 			android:layout_width="wrap_content"
@@ -29,7 +30,7 @@
 		android:layout_width="wrap_content"
 		android:layout_alignParentBottom="true"
 		android:layout_centerHorizontal="true"
-		android:layout_marginBottom="60dp"
+		android:layout_marginBottom="80dp"
 		android:textSize="20sp"
 		android:textColor="#FF0F00"
 		android:id="@+id/album_image_tips"/>

@@ -1,12 +1,14 @@
 package com.cj.music_player.activity;
 
 import android.support.v7.app.AppCompatActivity;
+import com.pgyersdk.crash.PgyCrashManager;
 
 import com.cj.music_player.R;
 import com.cj.music_player.info.MusicInfo;
-import com.cj.music_player.db.MusicInfoDB;
+import com.cj.music_player.list.SongList;
 import com.cj.music_player.tools.BitmapTools;
 import com.cj.music_player.tools.AlbumBitmap;
+import com.cj.music_player.db.SettingSharedUtils;
 
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import android.graphics.Color;
 import android.view.View.OnClickListener;
 import android.view.View;
 import android.widget.Toast;
+import java.util.Collections;
 
 public class AlbumImageActivity extends AppCompatActivity
 {
@@ -27,8 +30,7 @@ public class AlbumImageActivity extends AppCompatActivity
     private ImageView imageView;
     private TextView text;
 
-    private List<MusicInfo> list;
-    private MusicInfoDB db;
+    private List<MusicInfo> list = new ArrayList<MusicInfo>();
     private BitmapTools bitmap_tools =new BitmapTools();
 
     private Button save, select;
@@ -40,10 +42,14 @@ public class AlbumImageActivity extends AppCompatActivity
         // TODO: Implement this method
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_image);
-
-        list = new ArrayList<MusicInfo>();     
-        db = new MusicInfoDB(this);
-        list = db.getMusicInfo();
+        
+        PgyCrashManager.register(AlbumImageActivity.this);
+     
+        list = SongList.getMusicList(AlbumImageActivity.this);
+        if (SettingSharedUtils.getBoolean(AlbumImageActivity.this, "music_list_sort", true) == false)
+        {
+            Collections.reverse(list);
+        }
 
         Intent intent = this.getIntent();
         num = intent.getIntExtra("num", 0);
@@ -51,6 +57,10 @@ public class AlbumImageActivity extends AppCompatActivity
         imageView = (ImageView) findViewById(R.id.album_image_ImageView);
         text = (TextView) findViewById(R.id.album_image_TextView);
         save = (Button) findViewById(R.id.album_image_save);
+        if (SettingSharedUtils.getBoolean(AlbumImageActivity.this,"save_album_image", true) == false)
+        {
+            save.setVisibility(View.INVISIBLE);
+        }
 
         bitmap = AlbumBitmap.AlbumImage(list.get(num).getPath());
         if (bitmap == null)
@@ -79,7 +89,7 @@ public class AlbumImageActivity extends AppCompatActivity
                 public void onClick(View p1)
                 {
                     // TODO: Implement this method
-                    BitmapTools.saveBitmap(bitmap, "/音乐专辑图片/", list.get(num).getName() + ".png", Bitmap.CompressFormat.PNG, 100);
+                    BitmapTools.saveBitmap(bitmap, SettingSharedUtils.getString(AlbumImageActivity.this, "sava_album_image_path", "/sdcard/音乐专辑图片/"), list.get(num).getName() + ".png", Bitmap.CompressFormat.PNG, 100);
                     Toast.makeText(AlbumImageActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
                 }
             });

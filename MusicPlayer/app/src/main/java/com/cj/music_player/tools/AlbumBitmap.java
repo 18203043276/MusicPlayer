@@ -22,7 +22,6 @@ public class AlbumBitmap
     {
         File file = new File(path);
         Bitmap bitmap = null;
-
         if (file.exists())
         {
             try

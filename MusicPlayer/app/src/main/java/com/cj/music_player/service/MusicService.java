@@ -1,14 +1,17 @@
 package com.cj.music_player.service;
 
 import android.support.v7.app.NotificationCompat;
+import com.pgyersdk.crash.PgyCrashManager;
 
 import com.cj.music_player.R;
 import com.cj.music_player.activity.MusicActivity;
 import com.cj.music_player.info.MusicInfo;
 import com.cj.music_player.db.MusicInfoDB;
 import com.cj.music_player.db.SharedUtils;
+import com.cj.music_player.db.SettingSharedUtils;
 import com.cj.music_player.tools.AlbumBitmap;
 import com.cj.music_player.Constants;
+import com.cj.music_player.list.SongList;
 
 import android.app.Service;
 import android.media.MediaPlayer;
@@ -29,11 +32,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.widget.Toast;
 import java.io.IOException;
+import android.content.SharedPreferences;
+import java.util.Collections;
 
 public class MusicService extends Service
 {
     private MediaPlayer media;
-    private List<MusicInfo> list;
+    private List<MusicInfo> list = new ArrayList<MusicInfo>();
+    private SongList songList = new SongList();
 
     private NotificationManager manger;
 
@@ -68,12 +74,11 @@ public class MusicService extends Service
         // TODO Auto-generated method stub
         super.onCreate();
 
-        list = new ArrayList<MusicInfo>();     
+        PgyCrashManager.register(MusicService.this);
 
         media = new MediaPlayer();
 
-        db = new MusicInfoDB(this);
-        list = db.getMusicInfo();
+        list();
 
         handler = new Handler();
 
@@ -89,14 +94,19 @@ public class MusicService extends Service
         mFilter.addAction(Constants.SELECT);
         mFilter.addAction(Constants.NOTIFICATION);
         mFilter.addAction(Constants.UPDATE);
+        mFilter.addAction(Constants.UPDATE_LIST);
         registerReceiver(musicBd, mFilter);
 
         mode = SharedUtils.getInt(MusicService.this, "mode", 0);
         mode();
 
-        if (db.hasData())
+        if (list.size() > 1)
         {
             num = SharedUtils.getInt(MusicService.this, "num", 0);
+            if (num > list.size())
+            {
+                num = 0;
+            }
 
             nowIndex();
         }
@@ -107,7 +117,18 @@ public class MusicService extends Service
             intent.setClass(MusicService.this, MusicService.class);
             stopService(intent);
         }
-        
+
+    }
+
+    private void list()
+    {
+        // TODO: Implement this method
+        boolean sort = SettingSharedUtils.getBoolean(MusicService.this, "music_list_sort", true);
+        list = songList.getMusicList(MusicService.this);
+        if (sort == false)
+        {
+            Collections.reverse(list);
+        }
     }
 
     private final static String NOTIFICATION_ID = "Id";
@@ -130,7 +151,7 @@ public class MusicService extends Service
         builder.setSmallIcon(R.drawable.ic_launcher);
         builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
         builder.setOngoing(true);
-        // 通知行为（点击后能进入应用界面）
+        // 通知行为点击后进入应用界面
         Intent intent1 = new Intent();
         intent1.setClass(MusicService.this, MusicActivity.class);
         PendingIntent pe = PendingIntent.getActivity(MusicService.this, 100, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -142,17 +163,19 @@ public class MusicService extends Service
         remove.setTextViewText(R.id.notification_number, num + 1 + "/" + list.size());
 
         Bitmap bitmap = null;
-        //  bitmap = AlbumBitmap.getAlbumImage(MusicService.this, num, Integer.valueOf(list.get(num).getAlbumId()));
-        bitmap = BitmapFactory.decodeFile(list.get(num).getAlbumImagePath());
+        bitmap = AlbumBitmap.AlbumImage(list.get(num).getPath());
         if (bitmap == null)
         {
-            bitmap = AlbumBitmap.AlbumImage(list.get(num).getPath());
+            bitmap = AlbumBitmap.getAlbumImage(MusicService.this, num, Integer.valueOf(list.get(num).getAlbumId()));
             if (bitmap == null)
             {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_menu_left_image);
+                remove.setTextViewText(R.id.notification_tip, "没有专辑图片");
             }
         }
-
+        if (bitmap != null)
+        {
+            remove.setTextViewText(R.id.notification_tip, "");
+        }
         remove.setImageViewBitmap(R.id.notification_image, bitmap);
 
         if (isplay == false)
@@ -330,6 +353,19 @@ public class MusicService extends Service
             {
                 nowIndex();//刷新
             }
+            else if (intent.getAction().equals(Constants.UPDATE_LIST))
+            {
+                list.removeAll(list);
+                list();
+                for (int i = 0; i < list.size(); i++)
+                {
+                    if (SharedUtils.getString(MusicService.this, "nowTitle", list.get(num).getTitle()).equals(list.get(i).getTitle()))
+                    {
+                        num = i;
+                    }
+                }
+                nowIndex();
+            }
         }
     }
     /**
@@ -347,6 +383,7 @@ public class MusicService extends Service
         Notification();
 
         SharedUtils.saveInt(MusicService.this, "num", num);
+        SharedUtils.saveString(MusicService.this, "nowTitle", list.get(num).getTitle());
 
         numList.add(num);
     }
@@ -578,13 +615,13 @@ public class MusicService extends Service
 
             maxTime();
             /*if (media.isPlaying())
-            {
-                isPlay(true);
-            }
-            else
-            {
-                isPlay(false);
-            }*/
+             {
+             isPlay(true);
+             }
+             else
+             {
+             isPlay(false);
+             }*/
 
             handler.postDelayed(mRunnable, 1000);
         }

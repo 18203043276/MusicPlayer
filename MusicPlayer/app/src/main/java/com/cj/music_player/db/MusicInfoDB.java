@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class MusicInfoDB
 {
     private static final String TABLE_MUSIC = "music_info";
-    private Context mContext;
+    private static Context mContext;
 
     public MusicInfoDB(Context context)
     {
@@ -48,14 +48,9 @@ public class MusicInfoDB
     public List<MusicInfo> getMusicInfo()
     {
         SQLiteDatabase db = DatabaseHelper.getInstance(mContext);
-        String sql = "select * from " + TABLE_MUSIC;
-
-        return parseCursor(db.rawQuery(sql, null));
-    }
-
-    public List<MusicInfo> parseCursor(Cursor cursor)
-    {
         List<MusicInfo> list = new ArrayList<MusicInfo>();
+        String sql = "select * from " + TABLE_MUSIC;
+        Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext())
         {
             MusicInfo music = new MusicInfo();
@@ -105,6 +100,20 @@ public class MusicInfoDB
         SQLiteDatabase db = DatabaseHelper.getInstance(mContext);
         String sql = "update " + TABLE_MUSIC + " set favorite = " + favorite + " where _id = " + id;
         db.execSQL(sql);
+    }
+    
+    public static boolean queryExist(String title)
+    {
+        boolean isExist = false;
+        SQLiteDatabase db = DatabaseHelper.getInstance(mContext);
+
+        Cursor cursor = db.query(DatabaseHelper.TABLE_MUSIC, null, DatabaseHelper.TITLE + " like ?", new String[] { "%" + title + "%"}, null, null, null);        
+        if (cursor.getCount() > 0)
+        {
+            isExist = true;
+        }
+        cursor.close();
+        return isExist;
     }
 
     /**

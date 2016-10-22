@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_height="match_parent"
 	android:layout_width="300dp"
-    android:orientation="vertical"
-    tools:showIn="@layout/main"
-    tools:context="com.cj.music_player.activity.MusicActivity">
+	android:orientation="vertical"
+	tools:showIn="@layout/main"
+	tools:context="com.cj.music_player.activity.MusicActivity">
 
 	<LinearLayout
 		android:layout_height="200dp"
@@ -27,33 +27,6 @@
 
 			<Button
 				android:layout_height="50dp"
-				android:text="设置"
-				android:layout_width="match_parent"
-				android:gravity="left|center_vertical"
-				android:paddingLeft="50dp"
-				android:background="@drawable/main_menu_left_button"
-				android:layout_centerVertical="true"
-				android:textSize="20sp"
-				android:id="@+id/setting"
-				android:textColor="#FFFFFF"
-				android:textStyle="bold|italic|normal"/>
-
-			<ImageView
-				android:layout_height="30dp"
-				android:layout_width="30dp"
-				android:src="@drawable/setting"
-				android:layout_centerVertical="true"
-				android:layout_marginLeft="10dp"/>
-
-		</RelativeLayout>
-
-		<RelativeLayout
-			android:layout_height="wrap_content"
-			android:layout_width="match_parent"
-			android:layout_marginTop="5dp">
-
-			<Button
-				android:layout_height="50dp"
 				android:text="文件夹"
 				android:layout_width="match_parent"
 				android:gravity="left|center_vertical"
@@ -63,7 +36,7 @@
 				android:textSize="20sp"
 				android:id="@+id/folder"
 				android:textColor="#FFFFFF"
-				android:textStyle="bold|italic|normal"/>
+				android:textStyle="bold"/>
 
 			<ImageView
 				android:layout_height="30dp"
@@ -90,7 +63,7 @@
 				android:textSize="20sp"
 				android:id="@+id/album"
 				android:textColor="#FFFFFF"
-				android:textStyle="bold|italic|normal"/>
+				android:textStyle="bold"/>
 
 			<ImageView
 				android:layout_height="30dp"
@@ -117,7 +90,7 @@
 				android:textSize="20sp"
 				android:id="@+id/artist"
 				android:textColor="#FFFFFF"
-				android:textStyle="bold|italic|normal"/>
+				android:textStyle="bold"/>
 
 			<ImageView
 				android:layout_height="30dp"
@@ -144,12 +117,39 @@
 				android:textSize="20sp"
 				android:id="@+id/star"
 				android:textColor="#FFFFFF"
-				android:textStyle="bold|italic|normal"/>
+				android:textStyle="bold"/>
 
 			<ImageView
 				android:layout_height="30dp"
 				android:layout_width="30dp"
 				android:src="@drawable/star"
+				android:layout_centerVertical="true"
+				android:layout_marginLeft="10dp"/>
+
+		</RelativeLayout>
+
+		<RelativeLayout
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:layout_marginTop="5dp">
+
+			<Button
+				android:layout_height="50dp"
+				android:text="设置"
+				android:layout_width="match_parent"
+				android:gravity="left|center_vertical"
+				android:paddingLeft="50dp"
+				android:background="@drawable/main_menu_left_button"
+				android:layout_centerVertical="true"
+				android:textSize="20sp"
+				android:id="@+id/setting"
+				android:textColor="#FFFFFF"
+				android:textStyle="bold"/>
+
+			<ImageView
+				android:layout_height="30dp"
+				android:layout_width="30dp"
+				android:src="@drawable/setting"
 				android:layout_centerVertical="true"
 				android:layout_marginLeft="10dp"/>
 
@@ -171,7 +171,7 @@
 				android:textSize="20sp"
 				android:id="@+id/about"
 				android:textColor="#FFFFFF"
-				android:textStyle="bold|italic|normal"/>
+				android:textStyle="bold"/>
 
 			<ImageView
 				android:layout_height="35dp"

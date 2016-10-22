@@ -40,11 +40,11 @@ public class SortUtils
         {
             FolderInfo s1 = (FolderInfo) o1;
             FolderInfo s2 = (FolderInfo) o2;
-            if (s1.getTitle().compareTo(s2.getTitle()) < 0)
+            if (collator.compare(s1.getTitle(), s2.getTitle()) < 0)
             {
                 return -1;
             }
-            else if (s1.getTitle().compareTo(s2.getTitle()) > 0)
+            else if (collator.compare(s1.getTitle(), s2.getTitle()) > 0)
             {
                 return 1;
             }

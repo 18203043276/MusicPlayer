@@ -14,9 +14,15 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:id="@+id/notification_image"
-			android:src="@drawable/main_menu_left_image"
 			android:padding="5dp"
 			android:layout_centerInParent="true"/>
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_centerInParent="true"
+			android:id="@+id/notification_tip"
+			android:textSize="15sp"/>
 
 	</RelativeLayout>
 

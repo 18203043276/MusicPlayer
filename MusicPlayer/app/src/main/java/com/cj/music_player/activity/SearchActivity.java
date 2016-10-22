@@ -3,6 +3,7 @@ package com.cj.music_player.activity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.app.ActionBar;
+import com.pgyersdk.crash.PgyCrashManager;
 
 import com.cj.music_player.R;
 import com.cj.music_player.info.MusicInfo;
@@ -33,10 +34,10 @@ import android.view.MenuItem;
 
 public class SearchActivity extends AppCompatActivity
 {
-    private List<MusicInfo> list;
+    private List<MusicInfo> list = new ArrayList<MusicInfo>();
     private MusicListView listview;
     private SearchAdapter adapter;
-    private MusicInfoDB db;
+    private MusicInfoDB db = new MusicInfoDB(this);
     private SortUtils sort = new SortUtils();
 
     private SearchView searchView;
@@ -46,15 +47,15 @@ public class SearchActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
+        
+        PgyCrashManager.register(SearchActivity.this);
 
         ActionBar bar = getSupportActionBar();
         bar.setHomeAsUpIndicator(R.drawable.search);
         bar.setDisplayHomeAsUpEnabled(true);
 
         listview = (MusicListView) findViewById(R.id.search_list);
-        list = new ArrayList<MusicInfo>();
-
-        db = new MusicInfoDB(this);
+        
         list = db.getMusicInfo();
         adapter = new SearchAdapter(SearchActivity.this, list);
         listview.setAdapter(adapter);

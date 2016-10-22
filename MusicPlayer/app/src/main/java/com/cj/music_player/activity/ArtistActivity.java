@@ -2,12 +2,14 @@ package com.cj.music_player.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import com.pgyersdk.crash.PgyCrashManager;
 
 import com.cj.music_player.R;
 import com.cj.music_player.info.ArtistInfo;
 import com.cj.music_player.info.MusicInfo;
-import com.cj.music_player.db.ArtistInfoDB;
+import com.cj.music_player.list.SongList;
 import com.cj.music_player.db.DatabaseHelper;
+import com.cj.music_player.db.SettingSharedUtils;
 import com.cj.music_player.adapter.ArtistAdapter;
 import com.cj.music_player.adapter.QueryAdapter;
 import com.cj.music_player.util.SortUtils;
@@ -32,13 +34,13 @@ public class ArtistActivity extends AppCompatActivity
 {
     private List<ArtistInfo> ArtistList = new ArrayList<ArtistInfo>();
     private List<MusicInfo> MusicList = new ArrayList<MusicInfo>();
-    private ArtistInfoDB db = new ArtistInfoDB(this);
     private MusicListView listView;
     private ArtistAdapter ArtistAdapter;
     private QueryAdapter QueryAdapter;
     private int back = 0;
     private SortUtils sort = new SortUtils();
     private int n = 0;
+    private boolean s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -46,11 +48,18 @@ public class ArtistActivity extends AppCompatActivity
         // TODO: Implement this method
         super.onCreate(savedInstanceState);
         setContentView(R.layout.artist);
+        
+        PgyCrashManager.register(ArtistActivity.this);
 
         ActionBar bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(true);
 
-        ArtistList = db.getArtistInfo();
+        ArtistList = SongList.getArtistList(ArtistActivity.this);
+        s = SettingSharedUtils.getBoolean(ArtistActivity.this, "artist_list_sort", true);
+        if (s == false)
+        {
+            Collections.reverse(ArtistList);
+        }
 
         listView = (MusicListView) findViewById(R.id.artist_ListView);
         ArtistAdapter = new ArtistAdapter(ArtistActivity.this, ArtistList);
@@ -109,7 +118,11 @@ public class ArtistActivity extends AppCompatActivity
             info.setAlbumImagePath(album_image_path);
 
             MusicList.add(info);
-            Collections.sort(MusicList, sort.new SortMusicList());//排序
+            Collections.sort(MusicList, sort.new SortMusicList());
+            if (s == false)
+            {
+                Collections.reverse(ArtistList);
+            }
         }
         QueryAdapter = new QueryAdapter(ArtistActivity.this, MusicList);
         listView.setAdapter(QueryAdapter);

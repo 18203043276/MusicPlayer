@@ -2,12 +2,14 @@ package com.cj.music_player.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import com.pgyersdk.crash.PgyCrashManager;
 
 import com.cj.music_player.R;
 import com.cj.music_player.info.FolderInfo;
 import com.cj.music_player.info.MusicInfo;
-import com.cj.music_player.db.FolderInfoDB;
+import com.cj.music_player.list.SongList;
 import com.cj.music_player.db.DatabaseHelper;
+import com.cj.music_player.db.SettingSharedUtils;
 import com.cj.music_player.adapter.FolderAdapter;
 import com.cj.music_player.adapter.QueryAdapter;
 import com.cj.music_player.util.SortUtils;
@@ -33,12 +35,12 @@ public class FolderActivity extends AppCompatActivity
 {
     private List<FolderInfo> FolderList = new ArrayList<FolderInfo>();
     private List<MusicInfo> MusicList = new ArrayList<MusicInfo>();
-    private FolderInfoDB db = new FolderInfoDB(this);
     private MusicListView listView;
     private FolderAdapter FolderAdapter;
     private QueryAdapter QueryAdapter;
     private int back = 0;
     private SortUtils sort = new SortUtils();
+    private boolean s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -46,11 +48,18 @@ public class FolderActivity extends AppCompatActivity
         // TODO: Implement this method
         super.onCreate(savedInstanceState);
         setContentView(R.layout.folder);
+        
+        PgyCrashManager.register(FolderActivity.this);
 
         ActionBar bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(true);
 
-        FolderList = db.getFolderInfo();
+        s = SettingSharedUtils.getBoolean(FolderActivity.this, "folder_list_sort", true);
+        FolderList = SongList.getFolderList(FolderActivity.this);
+        if (s == false)
+        {
+            Collections.reverse(FolderList);
+        }
 
         listView = (MusicListView) findViewById(R.id.folder_ListView);
         FolderAdapter = new FolderAdapter(FolderActivity.this, FolderList);
@@ -78,7 +87,7 @@ public class FolderActivity extends AppCompatActivity
                     }
                 }
             });
-        
+
     }
     //搜索
     private void Search(String query)
@@ -111,7 +120,12 @@ public class FolderActivity extends AppCompatActivity
             info.setPath(path);
 
             MusicList.add(info);
-            Collections.sort(MusicList, sort.new SortMusicList());//排序
+            Collections.sort(MusicList, sort.new SortMusicList());
+            if (s == false)
+            {
+                Collections.reverse(MusicList);
+            }
+
         }
         QueryAdapter = new QueryAdapter(FolderActivity.this, MusicList);
         listView.setAdapter(QueryAdapter);

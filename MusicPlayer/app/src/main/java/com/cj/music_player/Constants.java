@@ -17,4 +17,5 @@ public class Constants
     public static String SELECT = "SELECT";//选择
     public static String NOTIFICATION = "NOTIFICATION";//通知栏
     public static String UPDATE = "UPDATE";//更新
+    public static String UPDATE_LIST = "update_list";
 }

@@ -2,14 +2,16 @@ package com.cj.music_player.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import com.pgyersdk.crash.PgyCrashManager;
 
 import com.cj.music_player.R;
-import com.cj.music_player.db.StarInfoDB;
+import com.cj.music_player.list.SongList;
 import com.cj.music_player.info.StarInfo;
 import com.cj.music_player.view.MusicListView;
 import com.cj.music_player.adapter.StarAdapter;
 import com.cj.music_player.Constants;
 import com.cj.music_player.util.SortUtils;
+import com.cj.music_player.db.SettingSharedUtils;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -24,11 +26,11 @@ import java.util.Collections;
 
 public class StarActivity extends AppCompatActivity
 {
-    private StarInfoDB db = new StarInfoDB(this);
     private List<StarInfo> list = new ArrayList<StarInfo>();
     private SortUtils sort = new SortUtils();
     private StarAdapter adapter;
     private MusicListView listView;
+    private boolean s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,12 +38,19 @@ public class StarActivity extends AppCompatActivity
         // TODO: Implement this method
         super.onCreate(savedInstanceState);
         setContentView(R.layout.star);
+        
+        PgyCrashManager.register(StarActivity.this);
 
         ActionBar bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(true);
 
-        list = db.getStarInfo();
-        Collections.sort(list, sort.new SortStarList());//排序
+        list = SongList.getStarList(StarActivity.this);
+        Collections.sort(list, sort.new SortStarList());
+        s = SettingSharedUtils.getBoolean(StarActivity.this, "star_list_sort", true);
+        if (s == false)
+        {
+            Collections.reverse(list);
+        }
         listView = (MusicListView) findViewById(R.id.star_ListView);
         adapter = new StarAdapter(StarActivity.this, list);
         listView.setAdapter(adapter);

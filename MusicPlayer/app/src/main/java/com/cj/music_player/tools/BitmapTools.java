@@ -11,7 +11,6 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Environment;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
@@ -29,6 +28,7 @@ import android.renderscript.RenderScript;
 
 public class BitmapTools
 {
+    //淡化图片
     public static Bitmap Blurbitmap(Context context, Bitmap bitmap, int scaleWidget, int scaleHeight, float blurRadius)
     {
         // 产生一个可以缩放的图片
@@ -151,9 +151,6 @@ public class BitmapTools
     //参数一要保存的Bitmap，参数二保存后的文件名字
     public static void saveBitmap(Bitmap bitmap, String path, String name, Bitmap.CompressFormat format, int compressSize)
     {
-        //得到手机的默认存储目录
-        
-        String dir = Environment.getExternalStorageDirectory().getPath().toString();
         File f = new File(path + name);
         if (!f.getParentFile().exists())
         {
@@ -179,10 +176,9 @@ public class BitmapTools
     }
 
     //检查文件 path为完整路径
-    public static boolean CheckFile(String path)
+    public boolean CheckFile(String path)
     {
-        String dir = Environment.getExternalStorageDirectory().getPath().toString();
-        if (new File(dir + path).exists())
+        if (new File(path).exists())
         {
             return true; 
         }

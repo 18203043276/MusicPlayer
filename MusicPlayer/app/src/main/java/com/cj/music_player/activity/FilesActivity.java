@@ -1,6 +1,7 @@
 package com.cj.music_player.activity;
 
 import android.support.v7.app.AppCompatActivity;
+import com.pgyersdk.crash.PgyCrashManager;
 
 import com.cj.music_player.R;
 import com.cj.music_player.adapter.FilesAdapter;
@@ -39,6 +40,8 @@ public class FilesActivity extends AppCompatActivity
         // TODO: Implement this method
         super.onCreate(savedInstanceState);
         setContentView(R.layout.files);
+        
+        PgyCrashManager.register(FilesActivity.this);
 
         text = (TextView) findViewById(R.id.files_path);
         list = (MusicListView) findViewById(R.id.files_list);

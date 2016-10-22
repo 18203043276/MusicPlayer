@@ -1,12 +1,14 @@
 package com.cj.music_player;
 
+import com.pgyersdk.crash.PgyCrashManager;
+import com.cj.music_player.db.SharedUtils;
+
 import android.app.Application;
 import java.util.List;
 import android.app.Activity;
 import java.util.LinkedList;
 import java.io.File;
 import android.os.Environment;
-import com.cj.music_player.db.SharedUtils;
 
 public class MusicApplication extends Application
 {
@@ -28,6 +30,8 @@ public class MusicApplication extends Application
         instance = this;
         CrashHandler crashHandler = CrashHandler.getInstance();  
         crashHandler.init(this);  
+        
+        PgyCrashManager.register(this);
         
         File music_album_art_path = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
         String path = music_album_art_path.getPath() + "/album_art/";

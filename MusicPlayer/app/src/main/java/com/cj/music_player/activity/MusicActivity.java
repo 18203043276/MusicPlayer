@@ -4,7 +4,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v4.widget.DrawerLayout;
+import com.pgyersdk.crash.PgyCrashManager;
+import com.pgyersdk.feedback.PgyFeedback;
+import com.pgyersdk.views.PgyerDialog;
+import com.pgyersdk.activity.FeedbackActivity;
+import com.pgyersdk.update.PgyUpdateManager;
+import com.pgyersdk.update.UpdateManagerListener;
+import com.pgyersdk.javabean.AppBean;
 
 import com.cj.music_player.R;
 import com.cj.music_player.MusicApplication;
@@ -16,11 +24,13 @@ import com.cj.music_player.db.MusicInfoDB;
 import com.cj.music_player.db.SharedUtils;
 import com.cj.music_player.db.StarInfoDB;
 import com.cj.music_player.db.DatabaseHelper;
+import com.cj.music_player.db.SettingSharedUtils;
 import com.cj.music_player.util.MusicUtils;
 import com.cj.music_player.service.MusicService;
 import com.cj.music_player.tools.MusicTools;
 import com.cj.music_player.tools.AlbumBitmap;
 import com.cj.music_player.tools.BitmapTools;
+import com.cj.music_player.list.SongList;
 
 import java.util.List;
 import android.widget.TextView;
@@ -67,12 +77,13 @@ import android.view.MotionEvent;
 import android.widget.AbsListView;
 import java.io.File;
 import android.os.Environment;
+import java.util.Collections;
 
 public class MusicActivity extends AppCompatActivity
 {
     private MusicListView music_list;
     private MusicAdapter adapter;
-	private List<MusicInfo> list;
+	public List<MusicInfo> list = new ArrayList<MusicInfo>();
     private MusicInfoDB db = new MusicInfoDB(this);
     private MusicUtils scan = new MusicUtils();
     private MusicTools tools = new MusicTools();
@@ -111,6 +122,7 @@ public class MusicActivity extends AppCompatActivity
     private TextView album_image_tips;
 
     private ImageView music_image, background;
+    private CardView album_image_card;
 
     private int num = 0;
 
@@ -119,18 +131,19 @@ public class MusicActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-      //  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-      //  {
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-       // }
+        //  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        //  {
+        //透明状态栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        //透明导航栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        // }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        PgyCrashManager.register(MusicActivity.this);
         MusicApplication.getInstance().addActivity(MusicActivity.this);
-        
+
         //标题栏
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -155,22 +168,21 @@ public class MusicActivity extends AppCompatActivity
 
         Mode();//播放模式
 
-        list = new ArrayList<MusicInfo>();
-        list = db.getMusicInfo();
-        adapter = new MusicAdapter(MusicActivity.this, list);
-		music_list.setAdapter(adapter);
+        list();
 
         //启动服务器
         Intent intent=new Intent();
         intent.setClass(MusicActivity.this, MusicService.class);
         startService(intent);
 
+        //注册广播
         IntentFilter mFilter = new IntentFilter();
         mFilter.addAction(Constants.MAXTIME);
         mFilter.addAction(Constants.NOWTIME);
         mFilter.addAction(Constants.NOWINDEX);
         mFilter.addAction(Constants.ISPLAY);
         mFilter.addAction(Constants.PATH);
+        mFilter.addAction(Constants.UPDATE_LIST);
         registerReceiver(musicBd, mFilter);
 
         handler = new Handler();
@@ -191,7 +203,7 @@ public class MusicActivity extends AppCompatActivity
         else
         {
             //判断音乐库专辑图片路径是否正确,不正确就重新扫描
-            Bitmap bm = BitmapFactory.decodeFile(list.get(num).getAlbumArt());
+            Bitmap bm = BitmapFactory.decodeFile(list.get(num).getAlbumImagePath());
             if (bm == null)
             {
                 new Handler().postDelayed(new Runnable(){
@@ -200,7 +212,7 @@ public class MusicActivity extends AppCompatActivity
                         public void run()
                         {
                             //要执行的代码
-                            scan_music();
+                            new SaveBitmapAsyncTask().execute();
                         }
                     }, 3000);
             }
@@ -209,9 +221,26 @@ public class MusicActivity extends AppCompatActivity
                 update();//刷新
             }
         }
-        
+
+        //检查应用更新
+        CheckUpdate();
+
     }
-    
+
+    private void list()
+    {
+        // TODO: Implement this method
+        list.removeAll(list);
+        boolean sort = SettingSharedUtils.getBoolean(MusicActivity.this, "music_list_sort", true);
+        list = SongList.getMusicList(MusicActivity.this);
+        if (sort == false)
+        {
+            Collections.reverse(list);
+        }
+        adapter = new MusicAdapter(MusicActivity.this, list);
+        music_list.setAdapter(adapter);
+    }
+
     //星级
     private void Star()
     {
@@ -425,6 +454,7 @@ public class MusicActivity extends AppCompatActivity
         show_number = (TextView) findViewById(R.id.show_number);
 
         music_image = (ImageView) findViewById(R.id.music_image);
+        album_image_card = (CardView) findViewById(R.id.main_main_image_CardView);
         background = (ImageView) findViewById(R.id.music_image_background);
 
         album_image_tips = (TextView) findViewById(R.id.album_image_tips);
@@ -690,23 +720,27 @@ public class MusicActivity extends AppCompatActivity
                     bitmap = AlbumBitmap.getAlbumImage(MusicActivity.this, num, Integer.valueOf(list.get(num).getAlbumId()));
                     if (bitmap == null)
                     {
-                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_menu_left_image);
+                        album_image_card.setVisibility(View.INVISIBLE);
                         album_image_tips.setText("没有专辑图片");
                     }
-                    else
-                    {
-                        album_image_tips.setText("");
-                    }
+                }
+                if (bitmap != null)
+                {
+                    album_image_card.setVisibility(View.VISIBLE);
+                    album_image_tips.setText("");
+                }
+                if (SettingSharedUtils.getBoolean(MusicActivity.this, "album_image", true) == true)
+                {
+                    album_image_card.setVisibility(View.VISIBLE);
+                    music_image.setImageBitmap(bitmap);
                 }
                 else
                 {
-                    album_image_tips.setText("");
+                    album_image_card.setVisibility(View.INVISIBLE);
                 }
-                music_image.setImageBitmap(bitmap);
 
                 //异步淡化专辑图片
-                FadeBitmapAsyncTask at = new FadeBitmapAsyncTask();
-                at.execute();
+                new FadeBitmapAsyncTask().execute();
 
                 show_singer.setText(list.get(num).getArtist());
                 show_title.setText(list.get(num).getTitle());
@@ -735,7 +769,6 @@ public class MusicActivity extends AppCompatActivity
                 bitmap = AlbumBitmap.AlbumImage(path);
                 if (bitmap == null)
                 {
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_menu_left_image);
                     album_image_tips.setText("没有专辑图片");
                 }
                 else
@@ -748,6 +781,11 @@ public class MusicActivity extends AppCompatActivity
                 show_title.setText(name);
                 show_singer.setText("");
                 show_number.setText("");
+            }
+            if (intent.getAction().equals(Constants.UPDATE_LIST))
+            {
+                list();
+                adapter.notifyDataSetChanged();
             }
         }
     }
@@ -805,7 +843,7 @@ public class MusicActivity extends AppCompatActivity
                     bm = BitmapTools.ScaleBitmap(bm, 1200, 1200, true);
                 }
             }
-            if (bm == null)
+            else
             {
                 bm = AlbumBitmap.getAlbumImage(MusicActivity.this, num, Integer.valueOf(list.get(num).getAlbumId()));
                 if (bm == null)
@@ -826,6 +864,7 @@ public class MusicActivity extends AppCompatActivity
     }
 
     //按键
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
         //返回键
@@ -935,8 +974,8 @@ public class MusicActivity extends AppCompatActivity
             case R.id.timer:
                 timer();
                 break;
-            case R.id.scan_music:
-                scan(); 
+            case R.id.feedback:
+                feedback();
                 break;
             case R.id.files:
                 Intent intent4 = new Intent(MusicActivity.this, FilesActivity.class);
@@ -957,7 +996,7 @@ public class MusicActivity extends AppCompatActivity
         // TODO: Implement this method
         if (list.size() > 1)
         {
-            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MusicActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
             builder.setIcon(R.drawable.ic_launcher);
             builder.setTitle("警告");
             builder.setMessage("数据库已有音乐数据，确定要重新扫描音乐吗？");
@@ -983,8 +1022,7 @@ public class MusicActivity extends AppCompatActivity
     private void scan_music()
     {
         // TODO: Implement this method
-        ScanAsyncTask s = new ScanAsyncTask();
-        s.execute();
+        new ScanAsyncTask().execute();
     }
 
     //异步扫描音乐
@@ -1003,9 +1041,9 @@ public class MusicActivity extends AppCompatActivity
             // 是否可以按回退键取消
             pd.setCancelable(false);
             pd.show();
-            
+
             super.onPreExecute();
-            
+
         }
         @Override
         protected Void doInBackground(Void[] p1)
@@ -1024,7 +1062,7 @@ public class MusicActivity extends AppCompatActivity
         protected void onProgressUpdate(Void[] values)
         {
             // TODO: Implement this method
-          
+
             super.onProgressUpdate(values);
         }
         @Override
@@ -1032,6 +1070,7 @@ public class MusicActivity extends AppCompatActivity
         {
             // TODO: Implement this method
             pd.dismiss();
+            list.removeAll(list);
             list = db.getMusicInfo();
             adapter = new MusicAdapter(MusicActivity.this, list);
             music_list.setAdapter(adapter);
@@ -1044,22 +1083,24 @@ public class MusicActivity extends AppCompatActivity
 
             if (list.size() > 1)
             {
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MusicActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
                 builder.setIcon(R.drawable.ic_launcher);
                 builder.setTitle("提示");
-                builder.setMessage("扫描完成");
+                builder.setMessage("扫描完成，一共扫描到" + list.size() + "首音乐文件");
                 builder.setNegativeButton("确定", null);
                 builder.show();
 
-                SaveBitmapAsyncTask b = new SaveBitmapAsyncTask();
-                b.execute();
+                if (SharedUtils.getBoolean(MusicActivity.this, "SavaAlbumImage", false) == false)
+                {
+                    new SaveBitmapAsyncTask().execute();
+                }
             }
             else
             {
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MusicActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
                 builder.setIcon(R.drawable.ic_launcher);
                 builder.setTitle("警告");
-                builder.setMessage("没有音乐文件");
+                builder.setMessage("系统媒体库没有音乐文件，请尝试重新扫描系统媒体库");
                 builder.setNegativeButton("确定", null);
                 builder.show();
             }
@@ -1069,21 +1110,16 @@ public class MusicActivity extends AppCompatActivity
     //关于
     private void about()
     {
-        LayoutInflater inflater = getLayoutInflater();
-        View dialog = inflater.inflate(R.layout.about_dialog, (ViewGroup) findViewById(R.id.about_dialog_LinearLayout));
-        final TextView text = (TextView) dialog.findViewById(R.id.about_dialog_TextView);
-        
         isSign = SharedUtils.getBoolean(MusicActivity.this, "sign", false);
         String sign = "未注册";
         if (isSign == true)
         {
             sign = "已注册";
         }
-        text.setText(sign);
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MusicActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
         builder.setIcon(R.drawable.ic_launcher);
         builder.setTitle("关于");
-        builder.setView(dialog);
+        builder.setMessage("版本V3.1\n\n此软件由陈江编写\n\n" + sign);
         builder.setPositiveButton("确定", null);
         builder.setNegativeButton("注册", new DialogInterface.OnClickListener(){
 
@@ -1117,7 +1153,7 @@ public class MusicActivity extends AppCompatActivity
         View dialog = inflater.inflate(R.layout.sign_dialog, (ViewGroup) findViewById(R.id.sign_dialog_LinearLayout));
         final EditText edittext = (EditText) dialog.findViewById(R.id.sign_dialog_EditText);
 
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MusicActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
         builder.setTitle("注册");
         builder.setIcon(R.drawable.ic_launcher);
         if (isSign == false)
@@ -1184,7 +1220,7 @@ public class MusicActivity extends AppCompatActivity
         final EditText edittext = (EditText) dialog.findViewById(R.id.timer_dialog_EditText);
         edittext.setText(timer_text);
 
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MusicActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
         builder.setIcon(R.drawable.ic_launcher);
         builder.setView(dialog);
         builder.setTitle("定时");
@@ -1289,7 +1325,7 @@ public class MusicActivity extends AppCompatActivity
     //音乐信息
     private void music_info()
     {
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MusicActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
         builder.setIcon(R.drawable.ic_launcher);
         builder.setTitle("音乐信息");
         builder.setMessage("歌曲: " + list.get(num).getTitle() + "\n"  
@@ -1311,6 +1347,52 @@ public class MusicActivity extends AppCompatActivity
         {
             builder.show();
         }
+    }
+
+    //反馈
+    private void feedback()
+    {
+        // TODO: Implement this method
+        // 打开沉浸式,默认为false
+        FeedbackActivity.setBarImmersive(true);
+        PgyFeedback.getInstance().showActivity(MusicActivity.this);
+        // 设置顶部导航栏和底部bar的颜色
+        FeedbackActivity.setBarBackgroundColor("#438FFF");
+        // 设置顶部按钮和底部按钮按下时的反馈色
+        FeedbackActivity.setBarButtonPressedColor("#ff0000");
+        // 设置颜色选择器的背景色
+        FeedbackActivity.setColorPickerBackgroundColor("#00000000");
+    }
+
+    //检查应用更新
+    private void CheckUpdate()
+    {
+        PgyUpdateManager.register(MusicActivity.this, new UpdateManagerListener() {
+
+                @Override
+                public void onUpdateAvailable(final String result)
+                {
+                    // 将新版本信息封装到AppBean中
+                    final AppBean appBean = getAppBeanFromString(result);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
+                    builder.setTitle("更新");
+                    builder.setMessage("此应用有新版本，请下载更新");
+                    builder.setPositiveButton("取消", null);
+                    builder.setNegativeButton("更新", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                startDownloadTask(MusicActivity.this, appBean.getDownloadURL());
+                            }
+                        });
+                    builder.show();
+                }
+                @Override
+                public void onNoUpdateAvailable()
+                {
+                }
+            });
     }
 
 }
