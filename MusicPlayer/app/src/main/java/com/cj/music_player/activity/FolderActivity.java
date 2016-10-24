@@ -40,7 +40,7 @@ public class FolderActivity extends AppCompatActivity
     private QueryAdapter QueryAdapter;
     private int back = 0;
     private SortUtils sort = new SortUtils();
-    private boolean s;
+    private SongList songList = new SongList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -54,12 +54,7 @@ public class FolderActivity extends AppCompatActivity
         ActionBar bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(true);
 
-        s = SettingSharedUtils.getBoolean(FolderActivity.this, "folder_list_sort", true);
-        FolderList = SongList.getFolderList(FolderActivity.this);
-        if (s == false)
-        {
-            Collections.reverse(FolderList);
-        }
+        FolderList = songList.getFolderList(FolderActivity.this);
 
         listView = (MusicListView) findViewById(R.id.folder_ListView);
         FolderAdapter = new FolderAdapter(FolderActivity.this, FolderList);
@@ -121,7 +116,7 @@ public class FolderActivity extends AppCompatActivity
 
             MusicList.add(info);
             Collections.sort(MusicList, sort.new SortMusicList());
-            if (s == false)
+            if (SettingSharedUtils.getBoolean(FolderActivity.this, "folder_list_sort", true) == false)
             {
                 Collections.reverse(MusicList);
             }

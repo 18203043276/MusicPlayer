@@ -9,7 +9,17 @@ public class StarInfo
     private String album;
     private String album_art;
     private String album_image_path;
+    private String path;
 
+    
+    public String getPath()
+    {
+        return path;
+    }
+    public void setPath(String path)
+    {
+        this.path = path;
+    }
 
     public String getAlbumImagePath()
     {

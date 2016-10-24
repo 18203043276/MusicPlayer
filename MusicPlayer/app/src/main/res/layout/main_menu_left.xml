@@ -5,9 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_height="match_parent"
 	android:layout_width="300dp"
-	android:orientation="vertical"
-	tools:showIn="@layout/main"
-	tools:context="com.cj.music_player.activity.MusicActivity">
+	android:orientation="vertical">
 
 	<LinearLayout
 		android:layout_height="200dp"

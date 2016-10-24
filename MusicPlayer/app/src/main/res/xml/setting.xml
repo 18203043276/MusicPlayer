@@ -13,7 +13,6 @@
         </CheckBoxPreference>
 
         <CheckBoxPreference
-            android:dependency="album_image"
             android:key="save_album_image"
             android:summaryOn="保存专辑图片"
             android:summaryOff="不保存专辑图片"
@@ -25,9 +24,16 @@
             android:dependency="save_album_image"
             android:dialogTitle="专辑图片保存路径"
             android:key="sava_album_image_path"
-			android:defaultValue="/sdcard/音乐专辑图片/"
+			android:defaultValue="/sdcard/音乐专辑图片"
             android:title="专辑图片保存路径" >
         </EditTextPreference>
+        
+        <Preference
+            android:key="re_sava_album_image"
+            android:persistent="false"
+            android:title="重新生成专辑图片缓存" >
+        </Preference>
+        
 
     </PreferenceCategory>
 	
@@ -78,7 +84,7 @@
     <PreferenceCategory android:title="媒体库" >
 
         <Preference
-            android:key="scan_media"
+            android:key="scan_music"
             android:persistent="false"
             android:title="重新扫描" >
         </Preference>
@@ -96,7 +102,7 @@
         <Preference
             android:key="version"
             android:persistent="false"
-            android:summary="V3.1"
+            android:summary="V3.1.1"
             android:title="版本" >
         </Preference>
 

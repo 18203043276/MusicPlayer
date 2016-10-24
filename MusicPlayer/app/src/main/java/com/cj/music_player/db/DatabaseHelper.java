@@ -10,7 +10,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 {
     private static SQLiteDatabase Db;
     private static DatabaseHelper Helper;
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     private static final String DB_NAME = "MusicInfo.db";
     
     public static final String TABLE_MUSIC = "music_info";
@@ -54,6 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String STAR_ALBUM = "album";
     public static final String STAR_ART = "album_art";
     public final static String STAR_ALBUM_IMAGE_PATH = "album_image_path";
+    public static final String STAR_PATH = "path";
     
     
     public static SQLiteDatabase getInstance(Context context)
@@ -115,7 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_STAR
                    + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " 
                    + STAR_ID + " char, " + STAR_NUMBER + " char, " + STAR_TITLE + " char, " 
-                   + STAR_ARTIST + " char, " + STAR_ALBUM  + " char, " + STAR_ART + " char, " + STAR_ALBUM_IMAGE_PATH + " char)");
+                   + STAR_ARTIST + " char, " + STAR_ALBUM  + " char, " + STAR_ART + " char, " + STAR_PATH + " char, " + STAR_ALBUM_IMAGE_PATH + " char)");
 	}
 
     @Override
@@ -139,14 +140,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.delete(TABLE_MUSIC, null, null);
         db.delete(TABLE_ALBUM, null, null);
         db.delete(TABLE_ARTIST, null, null);
-    }
-    
-    public Cursor search(String search)
-    { 
-        final String SEARCH="select * from" + TABLE_MUSIC + "( where" + "title" + "like %" + search + "%)";
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(SEARCH, null);//这边写上你的查询语句
-        return cursor;
     }
 
 }

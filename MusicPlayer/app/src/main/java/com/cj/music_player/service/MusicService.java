@@ -39,8 +39,7 @@ public class MusicService extends Service
 {
     private MediaPlayer media;
     private List<MusicInfo> list = new ArrayList<MusicInfo>();
-    private SongList songList = new SongList();
-
+    
     private NotificationManager manger;
 
     private MusicBroad musicBd = new MusicBroad();
@@ -78,7 +77,7 @@ public class MusicService extends Service
 
         media = new MediaPlayer();
 
-        list();
+        list = SongList.getMusicList(MusicService.this);
 
         handler = new Handler();
 
@@ -91,7 +90,6 @@ public class MusicService extends Service
         mFilter.addAction(Constants.SEEKBAR);
         mFilter.addAction(Constants.MODE);
         mFilter.addAction(Constants.SEARCH);
-        mFilter.addAction(Constants.SELECT);
         mFilter.addAction(Constants.NOTIFICATION);
         mFilter.addAction(Constants.UPDATE);
         mFilter.addAction(Constants.UPDATE_LIST);
@@ -118,17 +116,6 @@ public class MusicService extends Service
             stopService(intent);
         }
 
-    }
-
-    private void list()
-    {
-        // TODO: Implement this method
-        boolean sort = SettingSharedUtils.getBoolean(MusicService.this, "music_list_sort", true);
-        list = songList.getMusicList(MusicService.this);
-        if (sort == false)
-        {
-            Collections.reverse(list);
-        }
     }
 
     private final static String NOTIFICATION_ID = "Id";
@@ -237,9 +224,11 @@ public class MusicService extends Service
                         break;
                     case NOTIFICATION_BEFOER_ID:
                         before();
+                        isPlay(true);
                         break;
                     case NOTIFICATION_AFTER_ID:
                         after();
+                        isPlay(true);
                         break;
                     case NOTIFICATION_CIOSE_ID:
                         manger.cancel(14);
@@ -256,15 +245,6 @@ public class MusicService extends Service
                 String path = list.get(num).getPath();
                 setdata(path);             
                 play();                             
-            }
-            else if (intent.getAction().equals(Constants.SELECT))
-            {
-                String path = intent.getStringExtra("path");
-                String name = intent.getStringExtra("name");
-                setdata(path);
-                play();
-
-                path(path, name);
             }
             else if (intent.getAction().equals(Constants.SEARCH))
             {
@@ -355,8 +335,7 @@ public class MusicService extends Service
             }
             else if (intent.getAction().equals(Constants.UPDATE_LIST))
             {
-                list.removeAll(list);
-                list();
+                list = SongList.getMusicList(MusicService.this);
                 for (int i = 0; i < list.size(); i++)
                 {
                     if (SharedUtils.getString(MusicService.this, "nowTitle", list.get(num).getTitle()).equals(list.get(i).getTitle()))
@@ -381,6 +360,7 @@ public class MusicService extends Service
 
         isplay = true;
         Notification();
+        isPlay(true);
 
         SharedUtils.saveInt(MusicService.this, "num", num);
         SharedUtils.saveString(MusicService.this, "nowTitle", list.get(num).getTitle());
@@ -593,15 +573,6 @@ public class MusicService extends Service
         Intent intent = new Intent();
         intent.setAction(Constants.NOWINDEX);
         intent.putExtra(Constants.NOWINDEX, num);
-        sendBroadcast(intent);
-    }
-
-    private void path(String path, String name)
-    {
-        Intent intent = new Intent();
-        intent.setAction(Constants.PATH);
-        intent.putExtra("path", path);
-        intent.putExtra("name", name);
         sendBroadcast(intent);
     }
 

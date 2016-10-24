@@ -89,7 +89,7 @@ public class AlbumImageActivity extends AppCompatActivity
                 public void onClick(View p1)
                 {
                     // TODO: Implement this method
-                    BitmapTools.saveBitmap(bitmap, SettingSharedUtils.getString(AlbumImageActivity.this, "sava_album_image_path", "/sdcard/音乐专辑图片/"), list.get(num).getName() + ".png", Bitmap.CompressFormat.PNG, 100);
+                    BitmapTools.saveBitmap(bitmap, SettingSharedUtils.getString(AlbumImageActivity.this, "sava_album_image_path", "/sdcard/音乐专辑图片") + "/", list.get(num).getName() + ".png", Bitmap.CompressFormat.PNG, 100);
                     Toast.makeText(AlbumImageActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
                 }
             });

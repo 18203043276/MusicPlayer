@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 public class MusicInfoDB
 {
-    private static final String TABLE_MUSIC = "music_info";
-    private static Context mContext;
+    private final String TABLE_MUSIC = "music_info";
+    private Context mContext;
 
     public MusicInfoDB(Context context)
     {
@@ -102,18 +102,24 @@ public class MusicInfoDB
         db.execSQL(sql);
     }
     
-    public static boolean queryExist(String title)
+    public boolean queryExist(String path)
     {
         boolean isExist = false;
         SQLiteDatabase db = DatabaseHelper.getInstance(mContext);
 
-        Cursor cursor = db.query(DatabaseHelper.TABLE_MUSIC, null, DatabaseHelper.TITLE + " like ?", new String[] { "%" + title + "%"}, null, null, null);        
+        Cursor cursor = db.query(DatabaseHelper.TABLE_MUSIC, null, DatabaseHelper.DATA + " like ?", new String[] { "%" + path + "%"}, null, null, null);        
         if (cursor.getCount() > 0)
         {
             isExist = true;
         }
         cursor.close();
         return isExist;
+    }
+    
+    public void delete(String path)
+    {
+        SQLiteDatabase db = DatabaseHelper.getInstance(mContext);
+        db.delete(DatabaseHelper.TABLE_MUSIC, DatabaseHelper.DATA + "='" + path + "'", null);
     }
 
     /**

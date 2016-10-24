@@ -47,12 +47,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     
-    <style name="FilesTheme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-    
     <style name="AlbumImageTheme" parent="Theme.AppCompat.Dialog">
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>

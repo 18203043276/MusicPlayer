@@ -39,8 +39,8 @@ public class AlbumActivity extends AppCompatActivity
     private QueryAdapter QueryAdapter;
     private int back = 0;
     private SortUtils sort = new SortUtils();
+    private SongList songList = new SongList();
     private int n = 0;
-    private boolean s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -54,13 +54,8 @@ public class AlbumActivity extends AppCompatActivity
         ActionBar bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(true);
 
-        AlbumList = SongList.getAlbumList(AlbumActivity.this);
-        s = SettingSharedUtils.getBoolean(AlbumActivity.this, "album_list_sort", true);
-        if (s == false)
-        {
-            Collections.reverse(AlbumList);
-        }
-
+        AlbumList = songList.getAlbumList(AlbumActivity.this);
+     
         listView = (MusicListView) findViewById(R.id.album_ListView);
         AlbumAdapter = new AlbumAdapter(AlbumActivity.this, AlbumList);
         listView.setAdapter(AlbumAdapter);
@@ -119,7 +114,7 @@ public class AlbumActivity extends AppCompatActivity
 
             MusicList.add(info);
             Collections.sort(MusicList, sort.new SortMusicList());
-            if (s == false)
+            if (SettingSharedUtils.getBoolean(AlbumActivity.this, "album_list_sort", true) == false)
             {
                 Collections.reverse(MusicList);
             }

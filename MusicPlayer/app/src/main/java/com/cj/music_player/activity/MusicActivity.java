@@ -168,7 +168,9 @@ public class MusicActivity extends AppCompatActivity
 
         Mode();//播放模式
 
-        list();
+        list = SongList.getMusicList(MusicActivity.this);
+        adapter = new MusicAdapter(MusicActivity.this, list);
+        music_list.setAdapter(adapter);
 
         //启动服务器
         Intent intent=new Intent();
@@ -181,8 +183,8 @@ public class MusicActivity extends AppCompatActivity
         mFilter.addAction(Constants.NOWTIME);
         mFilter.addAction(Constants.NOWINDEX);
         mFilter.addAction(Constants.ISPLAY);
-        mFilter.addAction(Constants.PATH);
         mFilter.addAction(Constants.UPDATE_LIST);
+        mFilter.addAction(Constants.SAVE_ALBUM_IMAGE_CACHE);
         registerReceiver(musicBd, mFilter);
 
         handler = new Handler();
@@ -212,7 +214,7 @@ public class MusicActivity extends AppCompatActivity
                         public void run()
                         {
                             //要执行的代码
-                            new SaveBitmapAsyncTask().execute();
+                            new SaveAlbumImageCacheAsyncTask().execute();
                         }
                     }, 3000);
             }
@@ -225,20 +227,6 @@ public class MusicActivity extends AppCompatActivity
         //检查应用更新
         CheckUpdate();
 
-    }
-
-    private void list()
-    {
-        // TODO: Implement this method
-        list.removeAll(list);
-        boolean sort = SettingSharedUtils.getBoolean(MusicActivity.this, "music_list_sort", true);
-        list = SongList.getMusicList(MusicActivity.this);
-        if (sort == false)
-        {
-            Collections.reverse(list);
-        }
-        adapter = new MusicAdapter(MusicActivity.this, list);
-        music_list.setAdapter(adapter);
     }
 
     //星级
@@ -261,21 +249,22 @@ public class MusicActivity extends AppCompatActivity
                     String album = list.get(num).getAlbum();
                     String album_art = list.get(num).getAlbumArt();
                     String album_image_path = list.get(num).getAlbumImagePath();
+                    String path = list.get(num).getPath();
 
-                    if (StarInfoDB.queryExist(title) == true)
+                    if (StarInfoDB.queryExist(path) == true)
                     {
                         if (t == 0)
                         {
-                            StarInfoDB.delete(title);
+                            StarInfoDB.delete(path);
                         }
                         else
                         {
-                            StarInfoDB.update(title, star);
+                            StarInfoDB.update(path, star);
                         }
                     }
                     else if (t > 0)
                     {
-                        StarInfoDB.saveStarInfo(id, star, title, artist, album, album_art, album_image_path);
+                        StarInfoDB.saveStarInfo(id, star, title, artist, album, album_art, album_image_path, path);
                     }
                 }
             });
@@ -466,14 +455,6 @@ public class MusicActivity extends AppCompatActivity
                 {
                     // TODO: Implement this method
                     isplay = !isplay;
-                    if (isplay == true)
-                    {
-                        play.setImageResource(R.drawable.music_pause);
-                    }
-                    else
-                    {
-                        play.setImageResource(R.drawable.music_play);
-                    }
                     musicPlay(isplay);
                 }
             });
@@ -636,6 +617,14 @@ public class MusicActivity extends AppCompatActivity
         intent.setAction(Constants.PLAY);
         intent.putExtra(Constants.PLAY, isplay);
         sendBroadcast(intent);
+        if (isplay == true)
+        {
+            play.setImageResource(R.drawable.music_pause);
+        }
+        else
+        {
+            play.setImageResource(R.drawable.music_play);
+        }
     }
 
     //上一曲，下一曲，0上一曲，1下一曲
@@ -740,7 +729,7 @@ public class MusicActivity extends AppCompatActivity
                 }
 
                 //异步淡化专辑图片
-                new FadeBitmapAsyncTask().execute();
+                new BlurAlbumImage().execute();
 
                 show_singer.setText(list.get(num).getArtist());
                 show_title.setText(list.get(num).getTitle());
@@ -760,38 +749,21 @@ public class MusicActivity extends AppCompatActivity
                     play.setImageResource(R.drawable.music_pause);
                 }
             }
-            if (intent.getAction().equals(Constants.PATH))
-            {
-                String path = intent.getStringExtra("path");
-                String name = intent.getStringExtra("name");
-
-                Bitmap bitmap = null;
-                bitmap = AlbumBitmap.AlbumImage(path);
-                if (bitmap == null)
-                {
-                    album_image_tips.setText("没有专辑图片");
-                }
-                else
-                {
-                    music_image.setImageBitmap(bitmap);
-                    album_image_tips.setText("");
-                }
-                background.setImageBitmap(BitmapTools.Blurbitmap(MusicActivity.this, bitmap, 10, 10, 0.5f));
-
-                show_title.setText(name);
-                show_singer.setText("");
-                show_number.setText("");
-            }
             if (intent.getAction().equals(Constants.UPDATE_LIST))
             {
-                list();
-                adapter.notifyDataSetChanged();
+                list = SongList.getMusicList(MusicActivity.this);
+                adapter = new MusicAdapter(MusicActivity.this, list);
+                music_list.setAdapter(adapter);
+            }
+            if (intent.getAction().equals(Constants.SAVE_ALBUM_IMAGE_CACHE))
+            {
+                new SaveAlbumImageCacheAsyncTask().execute();
             }
         }
     }
 
     //异步保存专辑图片
-    private class SaveBitmapAsyncTask extends AsyncTask<Void, Void, Void>
+    private class SaveAlbumImageCacheAsyncTask extends AsyncTask<Void, Void, Void>
     {
         @Override
         protected Void doInBackground(Void[] p1)
@@ -809,11 +781,8 @@ public class MusicActivity extends AppCompatActivity
                         bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_menu_left_image);
                     }
                 }
-                if (bitmap != null)
-                {
-                    String name = list.get(n).getName() + "-image";
-                    BitmapTools.saveBitmap(BitmapTools.ScaleBitmap(bitmap, 100, 100, false), MusicApplication.album_art_path, name, Bitmap.CompressFormat.PNG, 80);
-                }
+                String name = list.get(n).getName() + "-image";
+                BitmapTools.saveBitmap(BitmapTools.ScaleBitmap(bitmap, 100, 100, false), MusicApplication.getAlbumImagePath(), name, Bitmap.CompressFormat.PNG, 80);
             }
             return null;
         }
@@ -822,19 +791,19 @@ public class MusicActivity extends AppCompatActivity
         {
             // TODO: Implement this method
             SharedUtils.saveBoolean(MusicActivity.this, "SavaAlbumImage", true);
+            Toast.makeText(MusicActivity.this, "已生成专辑图片缓存", Toast.LENGTH_LONG).show();
             super.onPostExecute(result);
         }
     }
 
     //异步淡化图片
-    private class FadeBitmapAsyncTask extends AsyncTask<Void, Void, Void>
+    private class BlurAlbumImage extends AsyncTask<Void, Void, Bitmap>
     {
-        Bitmap bm = null;
-
         @Override
-        protected Void doInBackground(Void[] p1)
+        protected Bitmap doInBackground(Void[] p1)
         {
             // TODO: Implement this method
+            Bitmap bm = null;
             bm = AlbumBitmap.AlbumImage(list.get(num).getPath());
             if (bm != null)
             {
@@ -852,13 +821,13 @@ public class MusicActivity extends AppCompatActivity
                 }
             }
             bm = BitmapTools.Blurbitmap(MusicActivity.this, bm, 10, 10, 0.5f);
-            return null;
+            return bm;
         }
         @Override
-        protected void onPostExecute(Void result)
+        protected void onPostExecute(Bitmap result)
         {
             // TODO: Implement this method
-            background.setImageBitmap(bm);
+            background.setImageBitmap(result);
             super.onPostExecute(result);
         }
     }
@@ -974,12 +943,14 @@ public class MusicActivity extends AppCompatActivity
             case R.id.timer:
                 timer();
                 break;
+            case R.id.scan:
+                scan_music();
+                break;
+            case R.id.delete:
+                Delete(num);
+                break;
             case R.id.feedback:
                 feedback();
-                break;
-            case R.id.files:
-                Intent intent4 = new Intent(MusicActivity.this, FilesActivity.class);
-                startActivity(intent4);
                 break;
             case R.id.about:
                 about();
@@ -990,8 +961,8 @@ public class MusicActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    //扫描
-    private void scan()
+    //扫描音乐
+    private void scan_music()
     {
         // TODO: Implement this method
         if (list.size() > 1)
@@ -999,7 +970,7 @@ public class MusicActivity extends AppCompatActivity
             AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
             builder.setIcon(R.drawable.ic_launcher);
             builder.setTitle("警告");
-            builder.setMessage("数据库已有音乐数据，确定要重新扫描音乐吗？");
+            builder.setMessage("媒体库已有音乐数据，确定要重新扫描音乐吗？");
             builder.setNegativeButton("取消", null);
             builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
 
@@ -1007,26 +978,19 @@ public class MusicActivity extends AppCompatActivity
                     public void onClick(DialogInterface p1, int p2)
                     {
                         // TODO: Implement this method
-                        scan_music();
+                        new ScanMusicAsyncTask().execute();
                     }
                 });
             builder.show();
         }
         else
         {
-            scan_music();
+            new ScanMusicAsyncTask().execute();
         }
     }
 
-    //扫描音乐
-    private void scan_music()
-    {
-        // TODO: Implement this method
-        new ScanAsyncTask().execute();
-    }
-
     //异步扫描音乐
-    private class ScanAsyncTask extends AsyncTask<Void, Void, Void>
+    private class ScanMusicAsyncTask extends AsyncTask<Void, Void, Void>
     {
         ProgressDialog pd = new ProgressDialog(MusicActivity.this);
         @Override
@@ -1092,7 +1056,8 @@ public class MusicActivity extends AppCompatActivity
 
                 if (SharedUtils.getBoolean(MusicActivity.this, "SavaAlbumImage", false) == false)
                 {
-                    new SaveBitmapAsyncTask().execute();
+                    new SaveAlbumImageCacheAsyncTask().execute();
+                    Toast.makeText(MusicActivity.this, "正在生成专辑图片缓存", Toast.LENGTH_LONG).show();
                 }
             }
             else
@@ -1119,7 +1084,7 @@ public class MusicActivity extends AppCompatActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
         builder.setIcon(R.drawable.ic_launcher);
         builder.setTitle("关于");
-        builder.setMessage("版本V3.1\n\n此软件由陈江编写\n\n" + sign);
+        builder.setMessage("版本V3.1.1\n\n此软件由陈江编写\n\n" + sign);
         builder.setPositiveButton("确定", null);
         builder.setNegativeButton("注册", new DialogInterface.OnClickListener(){
 
@@ -1393,6 +1358,59 @@ public class MusicActivity extends AppCompatActivity
                 {
                 }
             });
+    }
+
+    //删除
+    private void Delete(final int num)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
+        builder.setIcon(R.drawable.ic_launcher);
+        builder.setTitle("删除");
+        builder.setMessage("确定要删除这首音乐吗？");
+        builder.setNegativeButton("取消", null);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
+
+                @Override
+                public void onClick(DialogInterface p1, int p2)
+                {
+                    // TODO: Implement this method
+                    db.delete(list.get(num).getPath());
+                    updateList();
+                    musicPlay(false);
+                    if (StarInfoDB.queryExist(list.get(num).getPath()) == true)
+                    {
+                        StarInfoDB.delete(list.get(num).getPath());
+                    }
+
+                    if (db.queryExist(list.get(num).getPath()) == true)
+                    {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
+                        builder.setIcon(R.drawable.ic_launcher);
+                        builder.setTitle("提示");
+                        builder.setMessage("删除失败");
+                        builder.setNegativeButton("确定", null);
+                        builder.show();
+                    }
+                    else
+                    {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MusicActivity.this);
+                        builder.setIcon(R.drawable.ic_launcher);
+                        builder.setTitle("提示");
+                        builder.setMessage("删除成功");
+                        builder.setNegativeButton("确定", null);
+                        builder.show();
+                    }
+                }
+            });
+        builder.show();
+    }
+
+    //刷新列表
+    private void updateList()
+    {
+        Intent intent = new Intent();
+        intent.setAction(Constants.UPDATE_LIST);
+        sendBroadcast(intent);
     }
 
 }

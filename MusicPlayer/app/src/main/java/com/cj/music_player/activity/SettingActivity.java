@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import com.pgyersdk.crash.PgyCrashManager;
 
 import com.cj.music_player.R;
+import com.cj.music_player.MusicApplication;
 import com.cj.music_player.Constants;
 import com.cj.music_player.MusicApplication;
 import com.cj.music_player.db.MusicInfoDB;
@@ -14,6 +15,9 @@ import com.cj.music_player.list.SongList;
 import com.cj.music_player.service.SystemMediaService;
 import com.cj.music_player.list.SongList;
 import com.cj.music_player.info.MusicInfo;
+import com.cj.music_player.tools.AlbumBitmap;
+import com.cj.music_player.tools.BitmapTools;
+import com.cj.music_player.db.SharedUtils;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -28,6 +32,10 @@ import java.io.File;
 import android.content.DialogInterface;
 import java.util.List;
 import java.util.ArrayList;
+import android.widget.Toast;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 
 public class SettingActivity extends AppCompatActivity
 {
@@ -57,6 +65,7 @@ public class SettingActivity extends AppCompatActivity
         private MusicInfoDB db = new MusicInfoDB(context);
         private MusicUtils scan = new MusicUtils();
         private List<MusicInfo> list = new ArrayList<MusicInfo>();
+        private MusicActivity main = new MusicActivity();
        
         @Override
         public void onCreate(Bundle savedInstanceState)
@@ -77,7 +86,7 @@ public class SettingActivity extends AppCompatActivity
             {
                 update();
             }
-            if (preference.getKey().equals("scan_media"))
+            if (preference.getKey().equals("scan_music"))
             {
                 list = SongList.getMusicList(context);
                 if (list.size() > 1)
@@ -85,7 +94,7 @@ public class SettingActivity extends AppCompatActivity
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setIcon(R.drawable.ic_launcher);
                     builder.setTitle("警告");
-                    builder.setMessage("数据库已有音乐数据，确定要重新扫描音乐吗？");
+                    builder.setMessage("媒体库已有音乐数据，确定要重新扫描音乐吗？");
                     builder.setNegativeButton("取消", null);
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
 
@@ -116,6 +125,13 @@ public class SettingActivity extends AppCompatActivity
                 builder.setNegativeButton("确定", null);
                 builder.show();
             }
+            if (preference.getKey().equals("re_sava_album_image"))
+            {
+                Intent intent = new Intent();
+                intent.setAction(Constants.SAVE_ALBUM_IMAGE_CACHE);
+                context.sendBroadcast(intent);
+                Toast.makeText(context, "请稍等，正在生成专辑图片缓存", Toast.LENGTH_LONG).show();
+            }
             return super.onPreferenceTreeClick(preferenceScreen, preference);
         }
 
@@ -132,7 +148,7 @@ public class SettingActivity extends AppCompatActivity
 			intent.setAction(Constants.UPDATE);
 			context.sendBroadcast(intent);
 		}
-
+        
         //异步扫描音乐
         public class ScanAsyncTask extends AsyncTask<Void, Void, Void>
         {

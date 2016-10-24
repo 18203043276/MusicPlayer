@@ -8,8 +8,8 @@ android {
         applicationId "com.cj.music_player"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 6
-        versionName "3.1"
+        versionCode 7
+        versionName "3.1.1"
     }
     buildTypes {
         release {

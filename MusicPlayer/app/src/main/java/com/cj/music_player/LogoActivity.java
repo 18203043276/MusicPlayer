@@ -3,7 +3,6 @@ package com.cj.music_player;
 import android.support.v7.app.AppCompatActivity;
 
 import com.cj.music_player.activity.MusicActivity;
-import com.cj.music_player.db.SettingSharedUtils;
 import com.cj.music_player.db.SharedUtils;
 import com.cj.music_player.info.MusicInfo;
 import com.cj.music_player.tools.BitmapTools;
@@ -43,16 +42,8 @@ public class LogoActivity extends AppCompatActivity
 
         MusicApplication.getInstance().addActivity(this);
 
-        boolean sort = SettingSharedUtils.getBoolean(LogoActivity.this, "music_list_sort", true);
-        if (sort == true)
-        {
-            list = SongList.getMusicList(LogoActivity.this);
-        }
-        else
-        {
-            list = SongList.getMusicList(LogoActivity.this);
-            Collections.reverse(list);
-        }
+        list = SongList.getMusicList(LogoActivity.this);
+
         num = SharedUtils.getInt(LogoActivity.this, "num", 0);
         if (num > list.size())
         {

@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 public class SearchAdapter extends BaseAdapter
 {
-    private LayoutInflater mInflater;
     private List<MusicInfo> list;
     private Context context;
 
@@ -21,7 +20,6 @@ public class SearchAdapter extends BaseAdapter
     {
         this.list = list;
         this.context = context;
-        mInflater = LayoutInflater.from(context);
     }
 
     @Override

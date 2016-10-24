@@ -147,8 +147,7 @@ public class BitmapTools
         return width + "×" + height;
     }
 
-    //保存Bitmap对象到sd卡
-    //参数一要保存的Bitmap，参数二保存后的文件名字
+    //保存Bitmap到sd卡
     public static void saveBitmap(Bitmap bitmap, String path, String name, Bitmap.CompressFormat format, int compressSize)
     {
         File f = new File(path + name);

@@ -1,7 +1,6 @@
 package com.cj.music_player;
 
 import com.pgyersdk.crash.PgyCrashManager;
-import com.cj.music_player.db.SharedUtils;
 
 import android.app.Application;
 import java.util.List;
@@ -12,14 +11,10 @@ import android.os.Environment;
 
 public class MusicApplication extends Application
 {
-    private List<Activity> mList = new LinkedList<Activity>();
+    private List<Activity> activityList = new LinkedList<Activity>();
     private static MusicApplication instance;
-    public static MusicApplication getInstance()
-    {
-        return instance;
-    }
     
-    public static String album_art_path;
+    private static File app_path;
     
     @Override
     public void onCreate()
@@ -33,15 +28,22 @@ public class MusicApplication extends Application
         
         PgyCrashManager.register(this);
         
-        File music_album_art_path = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        String path = music_album_art_path.getPath() + "/album_art/";
-        SharedUtils.saveString(this, "album_art_path", path);
-        album_art_path = SharedUtils.getString(this, "album_art_path", path);
+        app_path = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+    }
+    
+    public static MusicApplication getInstance()
+    {
+        return instance;
+    }
+    
+    public static String getAlbumImagePath()
+    {
+        return app_path.getPath() + "/album_image/";
     }
 
     public void exit()
     {
-        for (Activity activity:mList)
+        for (Activity activity:activityList)
         {
             activity.finish();
         }
@@ -50,13 +52,11 @@ public class MusicApplication extends Application
     }
     /**
      * 新建了一个activity
-     * 
-     * @param activity
      */
     public void addActivity(Activity activity)
     {
-        mList.add(activity);
+        activityList.add(activity);
         //ActionBarColor.initSystemBar(activity);//状态栏和标题栏的颜色保持一致
     }
-    
+
 }

@@ -28,9 +28,9 @@ public class StarActivity extends AppCompatActivity
 {
     private List<StarInfo> list = new ArrayList<StarInfo>();
     private SortUtils sort = new SortUtils();
+    private SongList songList = new SongList();
     private StarAdapter adapter;
     private MusicListView listView;
-    private boolean s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,10 +44,9 @@ public class StarActivity extends AppCompatActivity
         ActionBar bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(true);
 
-        list = SongList.getStarList(StarActivity.this);
+        list = songList.getStarList(StarActivity.this);
         Collections.sort(list, sort.new SortStarList());
-        s = SettingSharedUtils.getBoolean(StarActivity.this, "star_list_sort", true);
-        if (s == false)
+        if (SettingSharedUtils.getBoolean(StarActivity.this, "star_list_sort", true) == false)
         {
             Collections.reverse(list);
         }

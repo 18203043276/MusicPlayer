@@ -22,7 +22,7 @@ public class FolderAdapter extends BaseAdapter
         this.context = context;
         this.list = list;
     }
-
+    
     @Override
     public int getCount()
     {

@@ -71,7 +71,7 @@ public class MusicUtils
                 {
                     album_artist = "未知专辑歌手";
                 }
-                String album_image_path = MusicApplication.album_art_path + name + "-image";
+                String album_image_path = MusicApplication.getAlbumImagePath() + name + "-image";
 
 
                 music_info.setId(id);
