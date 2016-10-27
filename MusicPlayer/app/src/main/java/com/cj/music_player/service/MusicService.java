@@ -12,6 +12,7 @@ import com.cj.music_player.db.SettingSharedUtils;
 import com.cj.music_player.tools.AlbumBitmap;
 import com.cj.music_player.Constants;
 import com.cj.music_player.list.SongList;
+import com.cj.music_player.tools.BitmapTools;
 
 import android.app.Service;
 import android.media.MediaPlayer;
@@ -162,6 +163,10 @@ public class MusicService extends Service
         if (bitmap != null)
         {
             remove.setTextViewText(R.id.notification_tip, "");
+            if (bitmap.getWidth() > 1500 && bitmap.getHeight() > 1500)
+            {
+                bitmap = BitmapTools.ScaleBitmap(bitmap, 1200, 1200, true);
+            }
         }
         remove.setImageViewBitmap(R.id.notification_image, bitmap);
 

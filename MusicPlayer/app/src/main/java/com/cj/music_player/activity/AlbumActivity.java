@@ -8,6 +8,7 @@ import com.cj.music_player.R;
 import com.cj.music_player.info.AlbumInfo;
 import com.cj.music_player.info.MusicInfo;
 import com.cj.music_player.db.DatabaseHelper;
+import com.cj.music_player.db.MusicInfoDB;
 import com.cj.music_player.db.SettingSharedUtils;
 import com.cj.music_player.adapter.AlbumAdapter;
 import com.cj.music_player.adapter.QueryAdapter;
@@ -24,7 +25,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.view.View;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 import java.util.Collections;
 import android.view.MenuItem;
@@ -48,18 +48,17 @@ public class AlbumActivity extends AppCompatActivity
         // TODO: Implement this method
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album);
-        
+
         PgyCrashManager.register(AlbumActivity.this);
 
         ActionBar bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(true);
 
         AlbumList = songList.getAlbumList(AlbumActivity.this);
-     
+
         listView = (MusicListView) findViewById(R.id.album_ListView);
         AlbumAdapter = new AlbumAdapter(AlbumActivity.this, AlbumList);
         listView.setAdapter(AlbumAdapter);
-
         listView.setOnItemClickListener(new OnItemClickListener(){
 
                 @Override
@@ -68,7 +67,34 @@ public class AlbumActivity extends AppCompatActivity
                     // TODO: Implement this method
                     if (back == 0)
                     {
-                        Search(AlbumList.get(p3).getAlbumKeyId());
+                        MusicInfoDB db = new MusicInfoDB(AlbumActivity.this);
+                        Cursor cursor = db.query(DatabaseHelper.ALBUM_KEY_ID, AlbumList.get(p3).getAlbumKeyId(), 
+                                                 new String[] { DatabaseHelper.TITLE, DatabaseHelper.ARTIST, 
+                                                     DatabaseHelper.TIME, DatabaseHelper.ALBUM_IMAGE_PATH});
+                        while (cursor.moveToNext())
+                        {  
+                            //判断下一个下标是否有内容
+                            MusicInfo info = new MusicInfo();
+
+                            String title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.TITLE)); 
+                            String artist = cursor.getString(cursor.getColumnIndex(DatabaseHelper.ARTIST)); 
+                            String time = cursor.getString(cursor.getColumnIndex(DatabaseHelper.TIME));
+                            String album_image_path = cursor.getString(cursor.getColumnIndex(DatabaseHelper.ALBUM_IMAGE_PATH));
+
+                            info.setTitle(title);
+                            info.setArtist(artist);
+                            info.setTime(time);
+                            info.setAlbumImagePath(album_image_path);
+
+                            MusicList.add(info);
+                            Collections.sort(MusicList, sort.new SortMusicList());
+                            if (SettingSharedUtils.getBoolean(AlbumActivity.this, "album_list_sort", true) == false)
+                            {
+                                Collections.reverse(MusicList);
+                            }
+                        }
+                        QueryAdapter = new QueryAdapter(AlbumActivity.this, MusicList);
+                        listView.setAdapter(QueryAdapter);
                         back = 1;
                         n = p3;
                     }
@@ -84,45 +110,7 @@ public class AlbumActivity extends AppCompatActivity
                 }
             });
     }
-    //搜索
-    private void Search(String query)
-    {
-        // TODO: Implement this method
-        DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
-        SQLiteDatabase db = helper.getReadableDatabase();
-
-        Cursor cursor = db.query(DatabaseHelper.TABLE_MUSIC, new String[] { DatabaseHelper.ID, DatabaseHelper.TITLE, DatabaseHelper.ARTIST,
-                                     DatabaseHelper.TIME, DatabaseHelper.ART, DatabaseHelper.ALBUM_IMAGE_PATH }, DatabaseHelper.ALBUM_KEY_ID + " like ?", new String[] { "%" + query + "%"}, null, null, null);
-        while (cursor.moveToNext())
-        {  
-            //判断下一个下标是否有内容
-            MusicInfo info = new MusicInfo();
-
-            String id = cursor.getString(cursor.getColumnIndex(DatabaseHelper.ID));
-            String title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.TITLE)); 
-            String artist = cursor.getString(cursor.getColumnIndex(DatabaseHelper.ARTIST)); 
-            String time = cursor.getString(cursor.getColumnIndex(DatabaseHelper.TIME));
-            String album_art = cursor.getString(cursor.getColumnIndex(DatabaseHelper.ART));
-            String album_image_path = cursor.getString(cursor.getColumnIndex(DatabaseHelper.ALBUM_IMAGE_PATH));
-
-            info.setId(id);
-            info.setTitle(title);
-            info.setArtist(artist);
-            info.setTime(time);
-            info.setAlbumArt(album_art);
-            info.setAlbumImagePath(album_image_path);
-
-            MusicList.add(info);
-            Collections.sort(MusicList, sort.new SortMusicList());
-            if (SettingSharedUtils.getBoolean(AlbumActivity.this, "album_list_sort", true) == false)
-            {
-                Collections.reverse(MusicList);
-            }
-        }
-        QueryAdapter = new QueryAdapter(AlbumActivity.this, MusicList);
-        listView.setAdapter(QueryAdapter);
-    }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -138,8 +126,8 @@ public class AlbumActivity extends AppCompatActivity
                 {
                     MusicList.removeAll(MusicList);
                     listView.setAdapter(AlbumAdapter);
-                    back = 0;
                     listView.setSelection(n);
+                    back = 0;
                 }
                 break;
         }
@@ -167,8 +155,8 @@ public class AlbumActivity extends AppCompatActivity
             {
                 MusicList.removeAll(MusicList);
                 listView.setAdapter(AlbumAdapter);
-                back = 0;
                 listView.setSelection(n);
+                back = 0;
             }
             return false;
         }

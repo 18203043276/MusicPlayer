@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 import android.widget.ImageView;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.widget.RatingBar;
 
 public class StarAdapter extends BaseAdapter
@@ -62,7 +60,7 @@ public class StarAdapter extends BaseAdapter
             viewhodler.title = (TextView) convertView.findViewById(R.id.star_list_item_title);
             viewhodler.number = (TextView) convertView.findViewById(R.id.star_number);
             viewhodler.artist = (TextView) convertView.findViewById(R.id.star_list_item_artist);
-            viewhodler.icon = (ImageView) convertView.findViewById(R.id.star_list_item_ImageView);
+            viewhodler.image = (ImageView) convertView.findViewById(R.id.star_list_item_ImageView);
             viewhodler.star = (RatingBar) convertView.findViewById(R.id.star_list_item_RatingBar);
 
             convertView.setTag(viewhodler);
@@ -75,22 +73,17 @@ public class StarAdapter extends BaseAdapter
         viewhodler.artist.setText(list.get(position).getArtist());
         viewhodler.number.setText(position + 1 + "/" + list.size());
         viewhodler.star.setRating(Integer.valueOf(list.get(position).getStar()));
+        if (list.get(position).getAlbumImagePath() != null)
+        {
+            ListImageLoader.getInstance(9, Type.LIFO).loadImage(list.get(position).getAlbumImagePath(), viewhodler.image);
+        }
 
-        String path = list.get(position).getAlbumImagePath();
-        if (path == null)
-        {
-            viewhodler.icon.setImageResource(R.drawable.main_menu_left_image);
-        }
-        else
-        {
-            ListImageLoader.getInstance(9, Type.LIFO).loadImage(path, viewhodler.icon);
-        }
         return convertView;
     }
     static class viewhodler
     {
         TextView title, number, artist;
-        ImageView icon;
+        ImageView image;
         RatingBar star;
     }
 

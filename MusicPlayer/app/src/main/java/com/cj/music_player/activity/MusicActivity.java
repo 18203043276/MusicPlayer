@@ -83,7 +83,7 @@ public class MusicActivity extends AppCompatActivity
 {
     private MusicListView music_list;
     private MusicAdapter adapter;
-	public List<MusicInfo> list = new ArrayList<MusicInfo>();
+	private List<MusicInfo> list = new ArrayList<MusicInfo>();
     private MusicInfoDB db = new MusicInfoDB(this);
     private MusicUtils scan = new MusicUtils();
     private MusicTools tools = new MusicTools();
@@ -123,6 +123,7 @@ public class MusicActivity extends AppCompatActivity
 
     private ImageView music_image, background;
     private CardView album_image_card;
+    private Bitmap albumBitmap = null;
 
     private int num = 0;
 
@@ -728,6 +729,7 @@ public class MusicActivity extends AppCompatActivity
                     album_image_card.setVisibility(View.INVISIBLE);
                 }
 
+                albumBitmap = bitmap;
                 //异步淡化专辑图片
                 new BlurAlbumImage().execute();
 
@@ -769,6 +771,8 @@ public class MusicActivity extends AppCompatActivity
         protected Void doInBackground(Void[] p1)
         {
             // TODO: Implement this method
+            File f = new File(MusicApplication.getAlbumImagePath());
+            BitmapTools.deleteFile(f);
             for (int n = 0; n < list.size(); n ++)
             {
                 Bitmap bitmap = null;
@@ -803,16 +807,9 @@ public class MusicActivity extends AppCompatActivity
         protected Bitmap doInBackground(Void[] p1)
         {
             // TODO: Implement this method
-            Bitmap bm = null;
-            bm = AlbumBitmap.AlbumImage(list.get(num).getPath());
-            if (bm != null)
-            {
-                if (bm.getWidth() > 1200 && bm.getHeight() > 1200)
-                {
-                    bm = BitmapTools.ScaleBitmap(bm, 1200, 1200, true);
-                }
-            }
-            else
+            Bitmap bm = albumBitmap;
+           // bm = AlbumBitmap.AlbumImage(list.get(num).getPath());
+            if (bm == null)
             {
                 bm = AlbumBitmap.getAlbumImage(MusicActivity.this, num, Integer.valueOf(list.get(num).getAlbumId()));
                 if (bm == null)

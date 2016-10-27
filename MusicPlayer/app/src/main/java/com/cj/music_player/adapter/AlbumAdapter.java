@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 import android.widget.ImageView;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 public class AlbumAdapter extends BaseAdapter
 {
@@ -62,7 +60,7 @@ public class AlbumAdapter extends BaseAdapter
             viewhodler.number = (TextView) convertView.findViewById(R.id.album_number);
             viewhodler.list_number = (TextView) convertView.findViewById(R.id.album_list_item_number);
             viewhodler.artist = (TextView) convertView.findViewById(R.id.album_list_item_artist);
-            viewhodler.icon = (ImageView) convertView.findViewById(R.id.album_list_item_ImageView);
+            viewhodler.image = (ImageView) convertView.findViewById(R.id.album_list_item_image);
 
             convertView.setTag(viewhodler);
         }
@@ -74,25 +72,9 @@ public class AlbumAdapter extends BaseAdapter
         viewhodler.number.setText(list.get(position).getNumber());
         viewhodler.list_number.setText(position + 1 + "/" + list.size());
         viewhodler.artist.setText(list.get(position).getAlbumArtist());
-
-        /*Bitmap bm = null;
-         bm = BitmapFactory.decodeFile(list.get(position).getAlbum_Art());
-         if (bm != null)
-         {
-         viewhodler.icon.setImageBitmap(bm);
-         }
-         else
-         {
-         viewhodler.icon.setImageResource(R.drawable.main_menu_left_image);
-         }*/
-        String path = list.get(position).getAlbumArt();
-        if (path == null)
+        if (list.get(position).getAlbumArt() != null)
         {
-            viewhodler.icon.setImageResource(R.drawable.main_menu_left_image);
-        }
-        else
-        {
-            ListImageLoader.getInstance(9, Type.LIFO).loadImage(path, viewhodler.icon);
+            ListImageLoader.getInstance(9, Type.LIFO).loadImage(list.get(position).getAlbumArt(), viewhodler.image);
         }
 
         return convertView;
@@ -100,7 +82,7 @@ public class AlbumAdapter extends BaseAdapter
     static class viewhodler
     {
         TextView name, number, artist, list_number;
-        ImageView icon;
+        ImageView image;
     }
 
 }

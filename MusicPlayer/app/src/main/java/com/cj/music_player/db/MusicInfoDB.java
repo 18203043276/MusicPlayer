@@ -18,14 +18,14 @@ public class MusicInfoDB
     {
         this.mContext = context;
     }
-    
+
     public void saveMusicInfo(List<MusicInfo> list)
     {
         SQLiteDatabase db = DatabaseHelper.getInstance(mContext);
         for (MusicInfo music : list)
         {
             ContentValues cv = new ContentValues();
-            
+
             cv.put(DatabaseHelper.TITLE, music.getTitle());
             cv.put(DatabaseHelper.ARTIST, music.getArtist());
             cv.put(DatabaseHelper.TIME, music.getTime());
@@ -54,7 +54,7 @@ public class MusicInfoDB
         while (cursor.moveToNext())
         {
             MusicInfo music = new MusicInfo();
-            
+
             String title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.TITLE));
             String artist = cursor.getString(cursor.getColumnIndex(DatabaseHelper.ARTIST));
             String data = cursor.getString(cursor.getColumnIndex(DatabaseHelper.DATA));
@@ -70,7 +70,7 @@ public class MusicInfoDB
             String artist_key_id = cursor.getString(cursor.getColumnIndex(DatabaseHelper.ARTIST_KEY_ID));
             String album_artist = cursor.getString(cursor.getColumnIndex(DatabaseHelper.ALBUM_ARTIST));
             String album_image_path = cursor.getString(cursor.getColumnIndex(DatabaseHelper.ALBUM_IMAGE_PATH));
-            
+
             music.setTitle(title);
             music.setArtist(artist);
             music.setPath(data);
@@ -86,14 +86,14 @@ public class MusicInfoDB
             music.setArtistKeyId(artist_key_id);
             music.setAlbumArtist(album_artist);
             music.setAlbumImagePath(album_image_path);
-            
+
             list.add(music);
         }
         cursor.close();
         return list;
     }
-    
-    
+
+
 
     public void setFavoriteStateById(int id, int favorite)
     {
@@ -101,7 +101,7 @@ public class MusicInfoDB
         String sql = "update " + TABLE_MUSIC + " set favorite = " + favorite + " where _id = " + id;
         db.execSQL(sql);
     }
-    
+
     public boolean queryExist(String path)
     {
         boolean isExist = false;
@@ -115,7 +115,7 @@ public class MusicInfoDB
         cursor.close();
         return isExist;
     }
-    
+
     public void delete(String path)
     {
         SQLiteDatabase db = DatabaseHelper.getInstance(mContext);
@@ -156,7 +156,7 @@ public class MusicInfoDB
         }
         return count;
     }
-    
+
     public void deleteTables(Context context)
     {
         SQLiteDatabase db = DatabaseHelper.getInstance(mContext);
@@ -166,4 +166,13 @@ public class MusicInfoDB
         db.delete(DatabaseHelper.TABLE_ARTIST, null, null);
     }
 
+    public Cursor query(String queryTable, String key_id, String[] value)
+    {
+        // TODO: Implement this method
+        DatabaseHelper helper = new DatabaseHelper(mContext);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.query(DatabaseHelper.TABLE_MUSIC, value, queryTable + " like ?", new String[] { "%" + key_id + "%"}, null, null, null);
+        return cursor;
+    }
+    
 }

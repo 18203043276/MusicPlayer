@@ -5,14 +5,15 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-    tools:showIn="@layout/main"
-	tools:context="com.cj.music_player.activity.MusicActivity">
+	tools:showIn="@layout/main"
+	tools:context="com.cj.music_player.activity.MusicActivity"
+	android:background="#000000">
 
 	<ImageView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:scaleType="centerCrop"
-		android:id="@+id/music_image_background"/>
+		android:id="@+id/music_image_background"
+		android:scaleType="centerCrop"/>
 
 	<LinearLayout
 		android:layout_height="match_parent"

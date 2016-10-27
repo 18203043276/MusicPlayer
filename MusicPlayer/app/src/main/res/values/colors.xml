@@ -10,5 +10,8 @@
     <color name="colorPrimaryDark">#438FFF</color>
     <color name="colorAccent">#438FFF</color>
     <color name="colorAccentSearch">#FF00AE</color>
+    
+    <color name="recycler_item_press">#438FFF</color>
+    <color name="recycler_item_normal">#00000000</color>
 
 </resources>

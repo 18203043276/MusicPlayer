@@ -42,9 +42,9 @@ public class AlbumImageActivity extends AppCompatActivity
         // TODO: Implement this method
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_image);
-        
+
         PgyCrashManager.register(AlbumImageActivity.this);
-     
+
         list = SongList.getMusicList(AlbumImageActivity.this);
         if (SettingSharedUtils.getBoolean(AlbumImageActivity.this, "music_list_sort", true) == false)
         {
@@ -53,11 +53,11 @@ public class AlbumImageActivity extends AppCompatActivity
 
         Intent intent = this.getIntent();
         num = intent.getIntExtra("num", 0);
-        
+
         imageView = (ImageView) findViewById(R.id.album_image_ImageView);
         text = (TextView) findViewById(R.id.album_image_TextView);
         save = (Button) findViewById(R.id.album_image_save);
-        if (SettingSharedUtils.getBoolean(AlbumImageActivity.this,"save_album_image", true) == false)
+        if (SettingSharedUtils.getBoolean(AlbumImageActivity.this, "save_album_image", true) == false)
         {
             save.setVisibility(View.INVISIBLE);
         }
@@ -79,10 +79,14 @@ public class AlbumImageActivity extends AppCompatActivity
         }
         else
         {
+            if (bitmap.getWidth() > 1500 && bitmap.getHeight() > 1500)
+            {
+                bitmap = BitmapTools.ScaleBitmap(bitmap, 1200, 1200, true);
+            }
             imageView.setImageBitmap(bitmap);
             text.setText(bitmap_tools.bitmapWidthHeight(bitmap));
         }
-        
+
         save.setOnClickListener(new OnClickListener(){
 
                 @Override

@@ -175,11 +175,67 @@ public class BitmapTools
     }
 
     //检查文件 path为完整路径
-    public boolean CheckFile(String path)
+    public static boolean CheckFile(String path)
     {
         if (new File(path).exists())
         {
             return true; 
+        }
+        return false;
+    }
+
+    /**
+     * 获取文件名字的前面部分，不包括文件名
+     */
+    public static String getFilePreName(String fileName)
+    {
+        int index = fileName.lastIndexOf(".");
+        if (index == -1)
+        {
+            return fileName;
+        }
+        else
+        {
+            return fileName.substring(0, index);
+        }
+    }
+    
+    public static String filterFileNumber(String fileNumber)
+    {
+        String nume = fileNumber.replace(".mp3", "").replace(".ogg", "").replace(".flac", "").
+        replace(".wav", "");
+        return nume;
+    }
+
+    //删除文件
+    public static boolean deleteFile(File deleteFile)
+    {
+        if (deleteFile != null)
+        {
+            if (!deleteFile.exists())
+            {
+                return true;
+            }
+            if (deleteFile.isDirectory())
+            {
+                // 处理目录
+                File[] files = deleteFile.listFiles();
+                //循环删除目录
+                if (null != files)
+                {
+                    for (File file : files)
+                    {
+                        deleteFile(file);
+                    }
+                }
+                //删除目录自己
+                return deleteFile.delete();
+            }
+            else
+            {
+                // 如果是文件，删除
+                return deleteFile.delete();
+            }
         }
         return false;
     }

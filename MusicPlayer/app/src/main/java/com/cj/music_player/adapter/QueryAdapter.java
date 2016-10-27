@@ -56,7 +56,7 @@ public class QueryAdapter extends BaseAdapter
             viewhodler.singer = (TextView) convertView.findViewById(R.id.query_list_singer);
             viewhodler.time = (TextView) convertView.findViewById(R.id.query_list_time);
             viewhodler.number = (TextView) convertView.findViewById(R.id.query_list_number);
-            viewhodler.icon = (ImageView) convertView.findViewById(R.id.query_list_item_ImageView);
+            viewhodler.image = (ImageView) convertView.findViewById(R.id.query_list_item_ImageView);
 
             convertView.setTag(viewhodler);
         }
@@ -68,15 +68,17 @@ public class QueryAdapter extends BaseAdapter
         viewhodler.singer.setText("" + list.get(position).getArtist());
         viewhodler.time.setText("" + list.get(position).getTime());
         viewhodler.number.setText(position + 1 + "/" + list.size());
-
-        ListImageLoader.getInstance(9, Type.LIFO).loadImage(list.get(position).getAlbumImagePath(), viewhodler.icon);
+        if (list.get(position).getAlbumImagePath() != null)
+        {
+            ListImageLoader.getInstance(9, Type.LIFO).loadImage(list.get(position).getAlbumImagePath(), viewhodler.image);
+        }
 
         return convertView;
     }
     static class viewhodler
     {
         TextView title, singer, time, number;
-        ImageView icon;
+        ImageView image;
     }
-    
+
 }
