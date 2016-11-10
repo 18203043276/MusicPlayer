@@ -15,6 +15,5 @@ public class Constants
     public static String SEARCH = "SEARCH";//搜索
     public static String NOTIFICATION = "NOTIFICATION";//通知栏
     public static String UPDATE = "UPDATE";//更新
-    public static String UPDATE_LIST = "update_list";//更新列表
     public static String SAVE_ALBUM_IMAGE_CACHE = "save_album_image_cache";//保存专辑图片缓存
 }

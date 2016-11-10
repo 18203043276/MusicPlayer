@@ -68,10 +68,7 @@ public class QueryAdapter extends BaseAdapter
         viewhodler.singer.setText("" + list.get(position).getArtist());
         viewhodler.time.setText("" + list.get(position).getTime());
         viewhodler.number.setText(position + 1 + "/" + list.size());
-        if (list.get(position).getAlbumImagePath() != null)
-        {
-            ListImageLoader.getInstance(9, Type.LIFO).loadImage(list.get(position).getAlbumImagePath(), viewhodler.image);
-        }
+        ListImageLoader.getInstance(9, Type.LIFO).loadImage(list.get(position).getAlbumImagePath(), viewhodler.image);
 
         return convertView;
     }

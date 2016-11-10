@@ -44,11 +44,5 @@
 		android:layout_alignParentBottom="true"
 		android:layout_centerHorizontal="true"/>
 
-	<Button
-		android:layout_height="290dp"
-		android:layout_width="match_parent"
-		android:background="#00000000"
-		android:id="@+id/music_slide"/>
-
 </RelativeLayout>
 

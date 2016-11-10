@@ -73,10 +73,7 @@ public class StarAdapter extends BaseAdapter
         viewhodler.artist.setText(list.get(position).getArtist());
         viewhodler.number.setText(position + 1 + "/" + list.size());
         viewhodler.star.setRating(Integer.valueOf(list.get(position).getStar()));
-        if (list.get(position).getAlbumImagePath() != null)
-        {
-            ListImageLoader.getInstance(9, Type.LIFO).loadImage(list.get(position).getAlbumImagePath(), viewhodler.image);
-        }
+        ListImageLoader.getInstance(9, Type.LIFO).loadImage(list.get(position).getAlbumImagePath(), viewhodler.image);
 
         return convertView;
     }

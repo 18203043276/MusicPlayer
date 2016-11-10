@@ -13,5 +13,7 @@
     
     <color name="recycler_item_press">#438FFF</color>
     <color name="recycler_item_normal">#00000000</color>
-
+    
+    <color name="preference_fallback_accent_color">#438FFF</color>
+    
 </resources>

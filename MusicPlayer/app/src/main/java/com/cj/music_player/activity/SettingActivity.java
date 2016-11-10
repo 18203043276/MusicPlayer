@@ -13,6 +13,7 @@ import com.cj.music_player.db.MusicInfoDB;
 import com.cj.music_player.util.MusicUtils;
 import com.cj.music_player.list.SongList;
 import com.cj.music_player.service.SystemMediaService;
+import com.cj.music_player.service.AlbumImageCacheService;
 import com.cj.music_player.list.SongList;
 import com.cj.music_player.info.MusicInfo;
 import com.cj.music_player.tools.AlbumBitmap;
@@ -35,7 +36,6 @@ import java.util.ArrayList;
 import android.widget.Toast;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
 
 public class SettingActivity extends AppCompatActivity
 {
@@ -78,10 +78,6 @@ public class SettingActivity extends AppCompatActivity
         public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference)
         {
             // TODO: Implement this method
-            if (preference.getKey().equals("music_list_sort"))
-            {
-				updateList();
-            }
             if (preference.getKey().equals("album_image"))
             {
                 update();
@@ -92,7 +88,7 @@ public class SettingActivity extends AppCompatActivity
                 if (list.size() > 1)
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setIcon(R.drawable.ic_launcher);
+                    builder.setIcon(R.mipmap.ic_launcher);
                     builder.setTitle("警告");
                     builder.setMessage("媒体库已有音乐数据，确定要重新扫描音乐吗？");
                     builder.setNegativeButton("取消", null);
@@ -119,7 +115,7 @@ public class SettingActivity extends AppCompatActivity
                 s.scanSDCard(context, f);
                 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setIcon(R.drawable.ic_launcher);
+                builder.setIcon(R.mipmap.ic_launcher);
                 builder.setTitle("提示");
                 builder.setMessage("请稍等几分钟后重新扫描，因为重新扫描系统媒体库需要一段时间");
                 builder.setNegativeButton("确定", null);
@@ -127,20 +123,11 @@ public class SettingActivity extends AppCompatActivity
             }
             if (preference.getKey().equals("re_sava_album_image"))
             {
-                Intent intent = new Intent();
-                intent.setAction(Constants.SAVE_ALBUM_IMAGE_CACHE);
-                context.sendBroadcast(intent);
+                context.startService(new Intent(context, AlbumImageCacheService.class));
                 Toast.makeText(context, "请稍等，正在生成专辑图片缓存", Toast.LENGTH_LONG).show();
             }
             return super.onPreferenceTreeClick(preferenceScreen, preference);
         }
-
-		private void updateList()
-		{
-			Intent intent = new Intent();
-			intent.setAction(Constants.UPDATE_LIST);
-			context.sendBroadcast(intent);
-		}
 
 		private void update()
 		{
@@ -191,10 +178,8 @@ public class SettingActivity extends AppCompatActivity
 
                 if (list.size() > 1)
                 {
-                    updateList();//刷新
-                    
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setIcon(R.drawable.ic_launcher);
+                    builder.setIcon(R.mipmap.ic_launcher);
                     builder.setTitle("提示");
                     builder.setMessage("扫描完成，一共扫描到" + list.size() + "首音乐文件");
                     builder.setNegativeButton("确定", null);
@@ -203,7 +188,7 @@ public class SettingActivity extends AppCompatActivity
                 else
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setIcon(R.drawable.ic_launcher);
+                    builder.setIcon(R.drawable.warn);
                     builder.setTitle("警告");
                     builder.setMessage("系统媒体库没有音乐文件，请尝试重新扫描系统媒体库");
                     builder.setNegativeButton("确定", null);

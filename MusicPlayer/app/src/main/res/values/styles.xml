@@ -4,6 +4,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
 	</style>
     
     <style name="MainTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -27,9 +28,9 @@
     </style>
     
     <style name="SettingTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorAccent">@color/black</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
-
+    
     <style name="SearchTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorAccent">@color/colorAccentSearch</item>
         <item name="colorPrimary">@color/colorPrimary</item>

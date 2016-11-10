@@ -31,21 +31,24 @@ import android.graphics.Bitmap;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.widget.Toast;
 import java.io.IOException;
 import android.content.SharedPreferences;
 import java.util.Collections;
+import android.telephony.TelephonyManager;
+import android.telephony.PhoneStateListener;
 
 public class MusicService extends Service
 {
     private MediaPlayer media;
     private List<MusicInfo> list = new ArrayList<MusicInfo>();
-    
+
     private NotificationManager manger;
 
     private MusicBroad musicBd = new MusicBroad();
 
     private int num = 0;
+
+    private int comePhone = 0 ;//来电
 
     private Handler handler;
 
@@ -77,6 +80,9 @@ public class MusicService extends Service
         PgyCrashManager.register(MusicService.this);
 
         media = new MediaPlayer();
+        //设置电话的监听事件
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
+        telephonyManager.listen(new phoneListener(), PhoneStateListener.LISTEN_CALL_STATE);
 
         list = SongList.getMusicList(MusicService.this);
 
@@ -93,7 +99,6 @@ public class MusicService extends Service
         mFilter.addAction(Constants.SEARCH);
         mFilter.addAction(Constants.NOTIFICATION);
         mFilter.addAction(Constants.UPDATE);
-        mFilter.addAction(Constants.UPDATE_LIST);
         registerReceiver(musicBd, mFilter);
 
         mode = SharedUtils.getInt(MusicService.this, "mode", 0);
@@ -136,8 +141,8 @@ public class MusicService extends Service
         builder.setContentText(list.get(num).getArtist());
         builder.setTicker(list.get(num).getTitle());
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
-        builder.setSmallIcon(R.drawable.ic_launcher);
-        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
         builder.setOngoing(true);
         // 通知行为点击后进入应用界面
         Intent intent1 = new Intent();
@@ -150,8 +155,7 @@ public class MusicService extends Service
         remove.setTextViewText(R.id.notification_arstst, list.get(num).getArtist());
         remove.setTextViewText(R.id.notification_number, num + 1 + "/" + list.size());
 
-        Bitmap bitmap = null;
-        bitmap = AlbumBitmap.AlbumImage(list.get(num).getPath());
+        Bitmap bitmap = BitmapFactory.decodeFile(list.get(num).getAlbumImagePath());
         if (bitmap == null)
         {
             bitmap = AlbumBitmap.getAlbumImage(MusicService.this, num, Integer.valueOf(list.get(num).getAlbumId()));
@@ -167,9 +171,8 @@ public class MusicService extends Service
             {
                 bitmap = BitmapTools.ScaleBitmap(bitmap, 1200, 1200, true);
             }
+            remove.setImageViewBitmap(R.id.notification_image, bitmap);
         }
-        remove.setImageViewBitmap(R.id.notification_image, bitmap);
-
         if (isplay == false)
         {
             remove.setImageViewResource(R.id.notification_play, R.drawable.music_play);
@@ -243,7 +246,7 @@ public class MusicService extends Service
                         break;
                 }
             }
-            else if (intent.getAction().equals(Constants.LIST_INDEX))
+            if (intent.getAction().equals(Constants.LIST_INDEX))
             {
                 num = intent.getIntExtra(Constants.LIST_INDEX, 0);
 
@@ -251,7 +254,7 @@ public class MusicService extends Service
                 setdata(path);             
                 play();                             
             }
-            else if (intent.getAction().equals(Constants.SEARCH))
+            if (intent.getAction().equals(Constants.SEARCH))
             {
                 String title = intent.getStringExtra(Constants.SEARCH);
 
@@ -266,7 +269,7 @@ public class MusicService extends Service
                     }
                 }
             }
-            else if (intent.getAction().equals(Constants.PLAY))
+            if (intent.getAction().equals(Constants.PLAY))
             {
                 boolean isplay = intent.getBooleanExtra(Constants.PLAY, false);
                 if (isplay == false)
@@ -290,7 +293,7 @@ public class MusicService extends Service
                     }
                 }                    
             }
-            else if (intent.getAction().equals(Constants.SWITCH))
+            if (intent.getAction().equals(Constants.SWITCH))
             {
                 int next = intent.getIntExtra(Constants.SWITCH, 0);
                 if (next == 0)
@@ -302,53 +305,37 @@ public class MusicService extends Service
                     after();  
                 }
             }
-            else if (intent.getAction().equals(Constants.SEEKBAR))
+            if (intent.getAction().equals(Constants.SEEKBAR))
             {
                 int progress = intent.getIntExtra(Constants.SEEKBAR, 0);
                 media.seekTo(progress);
             }
-            else if (intent.getAction().equals(Constants.MODE))
+            if (intent.getAction().equals(Constants.MODE))
             {
                 mode = intent.getIntExtra(Constants.MODE, 0);
 
                 if (mode == 0)
                 {
                     mode = 0;
-                    Toast.makeText(MusicService.this, "顺序播放", 1000).show();
                 }
                 if (mode == 1)
                 {
                     mode = 1;
-                    Toast.makeText(MusicService.this, "全部循环", 1000).show();
                 }
                 if (mode == 2)
                 {
                     mode = 2;
-                    Toast.makeText(MusicService.this, "单曲循环", 1000).show();
                 }
                 if (mode == 3)
                 {
                     mode = 3;
-                    Toast.makeText(MusicService.this, "随机播放", 1000).show();
                 }       
                 mode();
                 SharedUtils.saveInt(MusicService.this, "mode", mode);
             }
-            else if (intent.getAction().equals(Constants.UPDATE))
+            if (intent.getAction().equals(Constants.UPDATE))
             {
                 nowIndex();//刷新
-            }
-            else if (intent.getAction().equals(Constants.UPDATE_LIST))
-            {
-                list = SongList.getMusicList(MusicService.this);
-                for (int i = 0; i < list.size(); i++)
-                {
-                    if (SharedUtils.getString(MusicService.this, "nowTitle", list.get(num).getTitle()).equals(list.get(i).getTitle()))
-                    {
-                        num = i;
-                    }
-                }
-                nowIndex();
             }
         }
     }
@@ -368,8 +355,7 @@ public class MusicService extends Service
         isPlay(true);
 
         SharedUtils.saveInt(MusicService.this, "num", num);
-        SharedUtils.saveString(MusicService.this, "nowTitle", list.get(num).getTitle());
-
+       
         numList.add(num);
     }
     //暂停
@@ -378,6 +364,7 @@ public class MusicService extends Service
         media.pause();
         isplay = false;
         Notification();
+        isPlay(false);
     }
     /**
      * 自动播放操作
@@ -590,17 +577,38 @@ public class MusicService extends Service
             nowTime();
 
             maxTime();
-            /*if (media.isPlaying())
-             {
-             isPlay(true);
-             }
-             else
-             {
-             isPlay(false);
-             }*/
 
             handler.postDelayed(mRunnable, 1000);
         }
     };
+
+    //电话监听事件的内部类
+    private class phoneListener extends PhoneStateListener
+    {
+        public void onCallStateChanged(int state, String incomingNumber)
+        {
+                switch (state)
+                {
+                    case TelephonyManager.CALL_STATE_RINGING:
+                        //来电状态判断音乐是否在播放
+                        if (media != null && media.isPlaying())
+                        {
+                            //让播放暂停
+                            pause();
+                            comePhone = 1 ;
+                        }
+                        break;
+                    case TelephonyManager.CALL_STATE_IDLE:
+                        //挂断状态，判断媒体对象是否存在
+                        if (media != null && comePhone == 1)
+                        {
+                            //存在就启动它
+                            play();
+                            comePhone = 0 ;
+                        }
+                        break;
+                }
+            }
+        }
 
 }

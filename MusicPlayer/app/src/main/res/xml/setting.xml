@@ -29,55 +29,11 @@
         </EditTextPreference>
         
         <Preference
-            android:key="re_sava_album_image"
+            android:key="re_album_image_cache"
             android:persistent="false"
             android:title="重新生成专辑图片缓存" >
         </Preference>
         
-
-    </PreferenceCategory>
-	
-	<PreferenceCategory android:title="列表排序" >
-
-        <CheckBoxPreference
-            android:key="music_list_sort"
-            android:summaryOn="按标题升序排序"
-            android:summaryOff="按标题降序排序"
-            android:defaultValue="true"
-            android:title="音乐列表排序" >
-        </CheckBoxPreference>
-
-        <CheckBoxPreference
-            android:key="album_list_sort"
-            android:summaryOn="按标题升序排序"
-            android:summaryOff="按标题降序排序"
-            android:defaultValue="true"
-            android:title="专辑列表排序" >
-        </CheckBoxPreference>
-
-        <CheckBoxPreference
-            android:key="artist_list_sort"
-            android:summaryOn="按标题升序排序"
-            android:summaryOff="按标题降序排序"
-            android:defaultValue="true"
-            android:title="歌手列表排序" >
-        </CheckBoxPreference>
-
-        <CheckBoxPreference
-            android:key="star_list_sort"
-            android:summaryOn="按星级升序排序"
-            android:summaryOff="按星级降序排序"
-            android:defaultValue="true"
-            android:title="星级列表排序" >
-        </CheckBoxPreference>
-
-        <CheckBoxPreference
-            android:key="folder_list_sort"
-            android:summaryOn="按标题升序排序"
-            android:summaryOff="按标题降序排序"
-            android:defaultValue="true"
-            android:title="文件夹列表排序" >
-        </CheckBoxPreference>
 
     </PreferenceCategory>
     
@@ -102,7 +58,7 @@
         <Preference
             android:key="version"
             android:persistent="false"
-            android:summary="V3.1.1"
+            android:summary="V2016.11.06"
             android:title="版本" >
         </Preference>
 

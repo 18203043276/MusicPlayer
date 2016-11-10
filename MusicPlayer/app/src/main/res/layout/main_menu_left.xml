@@ -28,7 +28,7 @@
 				android:text="文件夹"
 				android:layout_width="match_parent"
 				android:gravity="left|center_vertical"
-				android:paddingLeft="50dp"
+				android:paddingLeft="55dp"
 				android:background="@drawable/main_menu_left_button"
 				android:layout_centerVertical="true"
 				android:textSize="20sp"
@@ -37,8 +37,8 @@
 				android:textStyle="bold"/>
 
 			<ImageView
-				android:layout_height="30dp"
-				android:layout_width="30dp"
+				android:layout_height="35dp"
+				android:layout_width="35dp"
 				android:src="@drawable/folder"
 				android:layout_centerVertical="true"
 				android:layout_marginLeft="10dp"/>
@@ -55,7 +55,7 @@
 				android:text="专辑"
 				android:layout_width="match_parent"
 				android:gravity="left|center_vertical"
-				android:paddingLeft="50dp"
+				android:paddingLeft="55dp"
 				android:background="@drawable/main_menu_left_button"
 				android:layout_centerVertical="true"
 				android:textSize="20sp"
@@ -64,8 +64,8 @@
 				android:textStyle="bold"/>
 
 			<ImageView
-				android:layout_height="30dp"
-				android:layout_width="30dp"
+				android:layout_height="35dp"
+				android:layout_width="35dp"
 				android:src="@drawable/album"
 				android:layout_centerVertical="true"
 				android:layout_marginLeft="10dp"/>
@@ -82,7 +82,7 @@
 				android:text="歌手"
 				android:layout_width="match_parent"
 				android:gravity="left|center_vertical"
-				android:paddingLeft="50dp"
+				android:paddingLeft="55dp"
 				android:background="@drawable/main_menu_left_button"
 				android:layout_centerVertical="true"
 				android:textSize="20sp"
@@ -91,8 +91,8 @@
 				android:textStyle="bold"/>
 
 			<ImageView
-				android:layout_height="30dp"
-				android:layout_width="30dp"
+				android:layout_height="35dp"
+				android:layout_width="35dp"
 				android:src="@drawable/artist"
 				android:layout_centerVertical="true"
 				android:layout_marginLeft="10dp"/>
@@ -109,7 +109,7 @@
 				android:text="星级"
 				android:layout_width="match_parent"
 				android:gravity="left|center_vertical"
-				android:paddingLeft="50dp"
+				android:paddingLeft="55dp"
 				android:background="@drawable/main_menu_left_button"
 				android:layout_centerVertical="true"
 				android:textSize="20sp"
@@ -118,8 +118,8 @@
 				android:textStyle="bold"/>
 
 			<ImageView
-				android:layout_height="30dp"
-				android:layout_width="30dp"
+				android:layout_height="35dp"
+				android:layout_width="35dp"
 				android:src="@drawable/star"
 				android:layout_centerVertical="true"
 				android:layout_marginLeft="10dp"/>
@@ -136,7 +136,7 @@
 				android:text="设置"
 				android:layout_width="match_parent"
 				android:gravity="left|center_vertical"
-				android:paddingLeft="50dp"
+				android:paddingLeft="55dp"
 				android:background="@drawable/main_menu_left_button"
 				android:layout_centerVertical="true"
 				android:textSize="20sp"
@@ -145,8 +145,8 @@
 				android:textStyle="bold"/>
 
 			<ImageView
-				android:layout_height="30dp"
-				android:layout_width="30dp"
+				android:layout_height="38dp"
+				android:layout_width="38dp"
 				android:src="@drawable/setting"
 				android:layout_centerVertical="true"
 				android:layout_marginLeft="10dp"/>
@@ -163,7 +163,7 @@
 				android:text="关于"
 				android:layout_width="match_parent"
 				android:gravity="left|center_vertical"
-				android:paddingLeft="50dp"
+				android:paddingLeft="55dp"
 				android:background="@drawable/main_menu_left_button"
 				android:layout_centerVertical="true"
 				android:textSize="20sp"
@@ -176,7 +176,8 @@
 				android:layout_width="35dp"
 				android:layout_centerVertical="true"
 				android:layout_marginLeft="10dp"
-				android:src="@drawable/about"/>
+				android:src="@drawable/about"
+				android:padding="3dp"/>
 
 		</RelativeLayout>
 

@@ -1,6 +1,7 @@
 package com.cj.music_player.activity;
 
 import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.Snackbar;
 import com.pgyersdk.crash.PgyCrashManager;
 
 import com.cj.music_player.R;
@@ -21,7 +22,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.view.View.OnClickListener;
 import android.view.View;
-import android.widget.Toast;
 import java.util.Collections;
 
 public class AlbumImageActivity extends AppCompatActivity
@@ -94,7 +94,7 @@ public class AlbumImageActivity extends AppCompatActivity
                 {
                     // TODO: Implement this method
                     BitmapTools.saveBitmap(bitmap, SettingSharedUtils.getString(AlbumImageActivity.this, "sava_album_image_path", "/sdcard/音乐专辑图片") + "/", list.get(num).getName() + ".png", Bitmap.CompressFormat.PNG, 100);
-                    Toast.makeText(AlbumImageActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(imageView, "保存成功", Snackbar.LENGTH_SHORT).show();
                 }
             });
         select = (Button) findViewById(R.id.album_image_select);

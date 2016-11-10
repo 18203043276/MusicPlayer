@@ -18,11 +18,12 @@ public class AlbumAdapter extends BaseAdapter
 {
     private Context context;
     private List<AlbumInfo> list;
-
+ 
     public AlbumAdapter(Context context, List<AlbumInfo> list)
     {
         this.context = context;
         this.list = list;
+   
     }
 
     @Override
@@ -72,11 +73,8 @@ public class AlbumAdapter extends BaseAdapter
         viewhodler.number.setText(list.get(position).getNumber());
         viewhodler.list_number.setText(position + 1 + "/" + list.size());
         viewhodler.artist.setText(list.get(position).getAlbumArtist());
-        if (list.get(position).getAlbumArt() != null)
-        {
-            ListImageLoader.getInstance(9, Type.LIFO).loadImage(list.get(position).getAlbumArt(), viewhodler.image);
-        }
-
+        ListImageLoader.getInstance(9, Type.LIFO).loadImage(list.get(position).getAlbumArt(), viewhodler.image);
+        
         return convertView;
     }
     static class viewhodler
